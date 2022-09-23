@@ -1,19 +1,33 @@
 package com.api.spaceexplorer.model.entities;
 
+import com.api.spaceexplorer.model.dtos.ExplorerDto;
+import com.api.spaceexplorer.model.enums.ExplorerEnum;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 public class ExplorerEntity {
 
     private String explorerName;
     private String movement;
-    private char direction;
+    @Enumerated(EnumType.STRING)
+    private ExplorerEnum direction;
     private int x;
     private int y;
 
-    public ExplorerEntity(String explorerName, String movement, char direction, int x, int y) {
+    public ExplorerEntity(String explorerName, ExplorerEnum direction, int x, int y) {
         this.explorerName = explorerName;
-        this.movement = movement;
         this.direction = direction;
         this.x = x;
         this.y = y;
+    }
+
+    public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto){
+        ExplorerEntity explorer = new ExplorerEntity(explorerDto.getExplorerName(),
+                                                            ExplorerEnum.valueOf(explorerDto.getDirection()),
+                                                            explorerDto.getX(),
+                                                            explorerDto.getY());
+        return explorer;
     }
 
     public String getExplorerName() {
@@ -24,7 +38,7 @@ public class ExplorerEntity {
         return movement;
     }
 
-    public char getDirection() {
+    public ExplorerEnum getDirection() {
         return direction;
     }
 

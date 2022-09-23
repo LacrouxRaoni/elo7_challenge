@@ -1,5 +1,8 @@
 package com.api.spaceexplorer.model.entities;
 
+import com.api.spaceexplorer.model.dtos.ExplorerDto;
+import com.api.spaceexplorer.model.dtos.PlanetDto;
+
 public class PlanetEntity {
     private String planetName;
     private int width;
@@ -15,6 +18,13 @@ public class PlanetEntity {
         this.explorerAmount = explorerAmount;
     }
 
+    public static PlanetEntity fromPlanetDto(PlanetDto planetDto){
+        PlanetEntity planet = new PlanetEntity(planetDto.getPlanetName(),
+                planetDto.getWidth(),
+                planetDto.getHeight(),
+                planetDto.getWidth() * planetDto.getHeight());
+        return planet;
+    }
     public String getPlanetName() {
         return planetName;
     }
