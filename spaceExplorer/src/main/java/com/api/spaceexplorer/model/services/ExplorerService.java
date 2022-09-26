@@ -26,6 +26,8 @@ public class ExplorerService {
             return false;
         }
         var planetEntity = planetRepository.findPlanetEntityByPlanetName(explorerDto.getPlanetName());
+        if (explorerRepository.existsByExplorerName(explorerDto.getExplorerName()))
+            return false;
         var explorerEntity = new ExplorerEntity(
                 explorerDto.getExplorerName(),
                 ExplorerEnum.valueOf(explorerDto.getDirection()),
@@ -54,9 +56,9 @@ public class ExplorerService {
 
         switch (explorerDto.getDirection()){
             case "NORTH":
-            case "South":
-            case "West":
-            case "East":
+            case "SOUTH":
+            case "WEST":
+            case "EAST":
                 return true;
             default:
                 return false;

@@ -6,6 +6,7 @@ import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class PlanetService {
@@ -21,6 +22,8 @@ public class PlanetService {
             return false;
         }
         PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
+        if (planetRepository.existsByPlanetName(planetEntity.getPlanetName()))
+            return false;
         savePlanet(planetEntity);
         return true;
     }

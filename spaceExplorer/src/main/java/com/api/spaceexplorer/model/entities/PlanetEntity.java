@@ -25,7 +25,7 @@ public class PlanetEntity {
     private int width;
     @Column(name = "size_x")
     private int height;
-    private int explorerAmount;
+    private Integer explorerAmountLimit;
 
     @OneToMany(mappedBy = "planet", cascade = javax.persistence.CascadeType.ALL)
     private List<ExplorerEntity> explorers = new ArrayList<>();
@@ -36,7 +36,7 @@ public class PlanetEntity {
         this.planetName = planetName;
         this.width = width;
         this.height = height;
-        this.explorerAmount = explorerAmount;
+        this.explorerAmountLimit = explorerAmount;
     }
 
     public static PlanetEntity fromPlanetDto(PlanetDto planetDto){
@@ -63,8 +63,8 @@ public class PlanetEntity {
         return height;
     }
 
-    public int getExplorerAmount() {
-        return explorerAmount;
+    public int getExplorerAmountLimit() {
+        return explorerAmountLimit;
     }
 
 
@@ -81,12 +81,12 @@ public class PlanetEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlanetEntity that = (PlanetEntity) o;
-        return width == that.width && height == that.height && explorerAmount == that.explorerAmount && Objects.equals(id, that.id) && Objects.equals(planetName, that.planetName) && Objects.equals(explorers, that.explorers);
+        return width == that.width && height == that.height && explorerAmountLimit == that.explorerAmountLimit && Objects.equals(id, that.id) && Objects.equals(planetName, that.planetName) && Objects.equals(explorers, that.explorers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, planetName, width, height, explorerAmount, explorers);
+        return Objects.hash(id, planetName, width, height, explorerAmountLimit, explorers);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class PlanetEntity {
                 ", planetName='" + planetName + '\'' +
                 ", width=" + width +
                 ", height=" + height +
-                ", explorerAmount=" + explorerAmount +
+                ", explorerAmount=" + explorerAmountLimit +
                 '}';
     }
 }

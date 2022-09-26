@@ -26,6 +26,4 @@ public class ExplorerController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Ok");
     }
-
-
 }

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExplorerRepository extends JpaRepository<ExplorerEntity, Integer> {
 
+    boolean existsByExplorerName(String explorerName);
 
 }
