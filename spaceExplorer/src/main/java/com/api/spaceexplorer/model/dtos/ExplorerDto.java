@@ -8,13 +8,13 @@ public class ExplorerDto {
     private String planetName;
     @NotBlank
     private String explorerName;
-    @NotBlank
+
     private String movement;
-    @NotBlank
+
     private String direction;
-    @NotBlank
+
     private int x;
-    @NotBlank
+
     private int y;
 
     public String getPlanetName() {

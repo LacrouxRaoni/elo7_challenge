@@ -3,17 +3,35 @@ package com.api.spaceexplorer.model.entities;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.enums.ExplorerEnum;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
+import java.util.Objects;
 
+@Entity
+@Table(name = "explorers")
 public class ExplorerEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "explorer_name", nullable = false)
     private String explorerName;
+    @Column(name = "movements")
     private String movement;
+
+    @Column(name = "direction")
     @Enumerated(EnumType.STRING)
     private ExplorerEnum direction;
+    @Column(name = "coo_x", nullable = false)
     private int x;
+    @Column(name = "coo_y", nullable = false)
     private int y;
+
+    @ManyToOne()
+    private PlanetEntity planet;
+
+    public ExplorerEntity() {
+    }
 
     public ExplorerEntity(String explorerName, ExplorerEnum direction, int x, int y) {
         this.explorerName = explorerName;
@@ -22,12 +40,24 @@ public class ExplorerEntity {
         this.y = y;
     }
 
+    public ExplorerEntity(String explorerName, ExplorerEnum direction, int x, int y, PlanetEntity planet) {
+        this.explorerName = explorerName;
+        this.direction = direction;
+        this.x = x;
+        this.y = y;
+        this.planet = planet;
+    }
+
     public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto){
         ExplorerEntity explorer = new ExplorerEntity(explorerDto.getExplorerName(),
                                                             ExplorerEnum.valueOf(explorerDto.getDirection()),
-                                                            explorerDto.getX(),
+                                                                explorerDto.getX(),
                                                             explorerDto.getY());
         return explorer;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getExplorerName() {
@@ -48,5 +78,34 @@ public class ExplorerEntity {
 
     public int getY() {
         return y;
+    }
+
+    public PlanetEntity getPlanet() {
+        return planet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExplorerEntity that = (ExplorerEntity) o;
+        return x == that.x && y == that.y && Objects.equals(id, that.id) && Objects.equals(explorerName, that.explorerName) && Objects.equals(movement, that.movement) && direction == that.direction && Objects.equals(planet, that.planet);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, explorerName, movement, direction, x, y, planet);
+    }
+
+    @Override
+    public String toString() {
+        return "ExplorerEntity{" +
+                "id=" + id +
+                ", explorerName='" + explorerName + '\'' +
+                ", direction=" + direction +
+                ", x=" + x +
+                ", y=" + y +
+                ", planet=" + planet +
+                '}';
     }
 }

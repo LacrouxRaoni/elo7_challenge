@@ -21,7 +21,9 @@ public class ExplorerController {
 
     @PostMapping
     public ResponseEntity postExplorer(@RequestBody ExplorerDto explorerDto){
-        ExplorerService.createExplorerObj(explorerDto);
+        if (!explorerService.createExplorerObj(explorerDto)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Conflict: Invalid argument");
+        }
         return ResponseEntity.status(HttpStatus.OK).body("Ok");
     }
 
