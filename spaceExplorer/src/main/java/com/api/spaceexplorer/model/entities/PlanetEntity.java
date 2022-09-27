@@ -39,6 +39,10 @@ public class PlanetEntity {
         this.explorerAmountLimit = explorerAmount;
     }
 
+    public PlanetEntity(String planetName) {
+        this.planetName = planetName;
+    }
+
     public static PlanetEntity fromPlanetDto(PlanetDto planetDto){
         PlanetEntity planet = new PlanetEntity(planetDto.getPlanetName(),
                 planetDto.getWidth(),

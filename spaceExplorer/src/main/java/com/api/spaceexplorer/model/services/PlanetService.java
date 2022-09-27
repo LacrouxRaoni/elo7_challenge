@@ -2,11 +2,13 @@ package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
+import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 public class PlanetService {
@@ -34,7 +36,25 @@ public class PlanetService {
         }
     }
 
+    public void getPlanetObject(PlanetDto planetDto) {
+
+        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        if (!planetEntity.isPresent())
+            throw new PlanetException("Planet doesn't exists in Data Base");
+        System.out.println(planetEntity.get().toString());
+        for (ExplorerEntity c : planetEntity.get().getExplorer()){
+            System.out.println(c.getExplorerName());
+        }
+    }
+    public void validAndDeletePlanet(PlanetDto planetDto) {
+        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        if (!planetEntity.isPresent())
+            throw new PlanetException("Planet doesn't exists in Data Base");
+        deletePlanet(planetEntity.get());
+    }
+
     private boolean checkIfPlanetExists(String planetName) {
+
         return planetRepository.existsByPlanetName(planetName);
     }
 
@@ -42,4 +62,9 @@ public class PlanetService {
     public void savePlanet(PlanetEntity planetEntity) {
         planetRepository.save(planetEntity);
     }
+
+    @Transactional
+    public void deletePlanet(PlanetEntity planetEntity) { planetRepository.delete(planetEntity); }
+
+
 }

@@ -29,4 +29,14 @@ public class ExplorerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @DeleteMapping
+    public ResponseEntity deleteExplorer(@RequestBody ExplorerDto explorerDto) {
+        try {
+            explorerService.validAndDeleteExplorer(explorerDto);
+            return ResponseEntity.status(HttpStatus.OK).body("Explorer deleted with success");
+        } catch (ExplorerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

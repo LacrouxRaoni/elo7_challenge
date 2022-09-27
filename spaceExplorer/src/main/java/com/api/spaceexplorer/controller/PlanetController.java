@@ -20,15 +20,34 @@ public class PlanetController {
         this.planetService = planetService;
     }
 
+    @GetMapping
+    public ResponseEntity getPlanet(@RequestBody PlanetDto planetDto){
+        try {
+            planetService.getPlanetObject(planetDto);
+            return ResponseEntity.status(HttpStatus.OK).body("");
+        } catch (PlanetException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PostMapping
     public ResponseEntity postPlanet(@RequestBody PlanetDto planetDto){
         try {
             planetService.createPlanetObject(planetDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Planet created with success");
-        }
-        catch (PlanetException e) {
+        } catch (PlanetException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
     }
+
+    @DeleteMapping
+    public ResponseEntity deletePlanet(@RequestBody PlanetDto planetDto){
+        try {
+            planetService.validAndDeletePlanet(planetDto);
+            return ResponseEntity.status(HttpStatus.OK).body("Planet deleted with success");
+        } catch (PlanetException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    
 }
