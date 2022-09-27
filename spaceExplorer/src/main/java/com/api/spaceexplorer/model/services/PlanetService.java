@@ -1,12 +1,12 @@
 package com.api.spaceexplorer.model.services;
 
+import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 public class PlanetService {
@@ -17,23 +17,25 @@ public class PlanetService {
         this.planetRepository = planetRepository;
     }
 
-    public boolean createPlanetObject(PlanetDto planetDto){
-        if (!checkPlanetArgs(planetDto)){
-            return false;
-        }
+    public void createPlanetObject(PlanetDto planetDto){
+        checkPlanetArgs(planetDto);
         PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
-        if (planetRepository.existsByPlanetName(planetEntity.getPlanetName()))
-            return false;
+        if (checkIfPlanetExists(planetEntity.getPlanetName()))
+            throw new PlanetException("Planet already exists in Data Base");
         savePlanet(planetEntity);
-        return true;
     }
-
-    private static boolean checkPlanetArgs(PlanetDto planet) {
+    private static void checkPlanetArgs(PlanetDto planet) {
 
          if (planet.getPlanetName().matches("\\W*")) {
-            return false;
+            throw new PlanetException("Planet name should contains AlphaNumeric characters only");
          }
-        return planet.getWidth() >= 1 && planet.getHeight() >= 1;
+        if (planet.getWidth() <= 1 && planet.getHeight() <= 1){
+            throw new PlanetException("Planet size must be greater than 0");
+        }
+    }
+
+    private boolean checkIfPlanetExists(String planetName) {
+        return planetRepository.existsByPlanetName(planetName);
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.api.spaceexplorer.controller;
 
+import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.services.PlanetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,13 @@ public class PlanetController {
 
     @PostMapping
     public ResponseEntity postPlanet(@RequestBody PlanetDto planetDto){
-        if (!planetService.createPlanetObject(planetDto))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Conflict: Invalid argument");
-        else
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ok");
+        try {
+            planetService.createPlanetObject(planetDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Planet created with success");
+        }
+        catch (PlanetException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 }

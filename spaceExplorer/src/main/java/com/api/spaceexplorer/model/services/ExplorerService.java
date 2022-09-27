@@ -1,11 +1,11 @@
 package com.api.spaceexplorer.model.services;
 
+import com.api.spaceexplorer.controller.exceptions.ExplorerException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.enums.ExplorerEnum;
 import com.api.spaceexplorer.repositories.ExplorerRepository;
 import com.api.spaceexplorer.repositories.PlanetRepository;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,14 +20,15 @@ public class ExplorerService {
         this.planetRepository = planetRepository;
     }
 
-    public boolean createExplorerObj(ExplorerDto explorerDto) {
+    public void createExplorerObj(ExplorerDto explorerDto) {
 
-        if (!checkExplorerArgs(explorerDto)){
-            return false;
-        }
+        checkExplorerArgs(explorerDto);
+        if (existByExplorerName(explorerDto.getExplorerName()))
+            throw new ExplorerException("Explorer already exists in Data Base");
         var planetEntity = planetRepository.findPlanetEntityByPlanetName(explorerDto.getPlanetName());
-        if (explorerRepository.existsByExplorerName(explorerDto.getExplorerName()))
-            return false;
+        if (planetEntity.isEmpty()) {
+            throw new ExplorerException("Can't find planet in Data Base");
+        }
         var explorerEntity = new ExplorerEntity(
                 explorerDto.getExplorerName(),
                 ExplorerEnum.valueOf(explorerDto.getDirection()),
@@ -35,36 +36,36 @@ public class ExplorerService {
                 explorerDto.getY(),
                 planetEntity.get());
         saveExplorer(explorerEntity);
-        return true;
+    }
+    private boolean existByExplorerName(String explorerName) {
+        return explorerRepository.existsByExplorerName(explorerName);
     }
 
-    private static boolean checkExplorerArgs(ExplorerDto explorerDto) {
+    private static void checkExplorerArgs(ExplorerDto explorerDto) {
         if (explorerDto.getPlanetName().matches("\\W*")){
-            return false;
+            throw new ExplorerException("Planet name should contains AlphaNumeric characters only");
         }
-
         if (explorerDto.getExplorerName().matches("\\W*")){
-            return false;
+            throw new ExplorerException("Explorer name should contains AlphaNumeric characters only");
         }
         if (explorerDto.getX() < 0 || explorerDto.getY() < 0){
-            return false;
+            throw new ExplorerException("axis x and y can't be less than 0");
         }
-        return validDirection(explorerDto);
+        validDirection(explorerDto);
     }
 
-    private static boolean validDirection(ExplorerDto explorerDto) {
+    private static void validDirection(ExplorerDto explorerDto) {
 
         switch (explorerDto.getDirection()){
             case "NORTH":
             case "SOUTH":
             case "WEST":
             case "EAST":
-                return true;
+                break ;
             default:
-                return false;
+                throw new ExplorerException("Cardinals must be in Uppercase eg:NORTH");
         }
     }
-
     @Transactional
     public void saveExplorer(ExplorerEntity explorerEntity) {
         explorerRepository.save(explorerEntity);

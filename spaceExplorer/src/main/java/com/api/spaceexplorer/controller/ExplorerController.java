@@ -1,5 +1,6 @@
 package com.api.spaceexplorer.controller;
 
+import com.api.spaceexplorer.controller.exceptions.ExplorerException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.services.ExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,11 @@ public class ExplorerController {
 
     @PostMapping
     public ResponseEntity postExplorer(@RequestBody ExplorerDto explorerDto){
-        if (!explorerService.createExplorerObj(explorerDto)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Conflict: Invalid argument");
+        try {
+            explorerService.createExplorerObj(explorerDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Explorer added with success");
+        } catch (ExplorerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Ok");
     }
 }
