@@ -45,12 +45,27 @@ public class ExplorerService {
         }
     }
 
-    private static void validDirection(ExplorerDto explorerDto) {
+    private static void validAxisOutOfBounds(ExplorerDto explorerDto, PlanetEntity planetEntity) {
 
-        if (explorerDto.getX() < 0 || explorerDto.getY() < 0){
+        if (explorerDto.getX() < 0 || explorerDto.getY() < 0)
             throw new ExplorerException("axis x and y can't be less than 0");
+        if (explorerDto.getX() > planetEntity.getHeight())
+            throw new ExplorerException("axis x out of planet area");
+        if (explorerDto.getY() > planetEntity.getWidth())
+            throw new ExplorerException("axis y out of planet area");
+    }
+
+    private static void validAxisInSamePosition(ExplorerDto explorerDto, PlanetEntity planetEntity) {
+        List<ExplorerEntity> explorers = planetEntity.getExplorer();
+        for (ExplorerEntity c : explorers){
+            if (c.getX() == explorerDto.getX() && c.getY() == explorerDto.getY())
+                throw new ExplorerException("This explorer can't be registered in this position");
         }
-        switch (explorerDto.getDirection()){
+    }
+
+    private static void validCardinal(String cardinal) {
+
+        switch (cardinal){
             case "NORTH":
             case "SOUTH":
             case "WEST":
@@ -61,25 +76,38 @@ public class ExplorerService {
         }
     }
 
-    public void createExplorerObj(ExplorerDto explorerDto) {
+    private static void validDirection(ExplorerDto explorerDto, PlanetEntity planetEntity) {
 
-        checkExplorerArgs(explorerDto);
-        validDirection(explorerDto);
+        validAxisOutOfBounds(explorerDto, planetEntity);
+        validAxisInSamePosition(explorerDto, planetEntity);
+        validCardinal(explorerDto.getDirection());
+    }
+
+    private Optional<PlanetEntity> validPlanetExplorerExistence(ExplorerDto explorerDto) {
         if (existByExplorerName(explorerDto.getExplorerName()))
             throw new ExplorerException("Explorer already exists in Data Base");
         var planetEntity = locatePlanet(explorerDto.getPlanetName());
-        var explorerEntity = new ExplorerEntity(
-                explorerDto.getExplorerName(),
-                ExplorerEnum.valueOf(explorerDto.getDirection()),
-                explorerDto.getX(),
-                explorerDto.getY(),
-                planetEntity.get());
-        planetEntity.get().sumExplorerAmount();
-        if (planetEntity.get().getExplorerAmount() <= planetEntity.get().getExplorerAmountLimit())
+        return planetEntity;
+    }
+
+    private void createExplorerObj(ExplorerDto explorerDto, ExplorerEntity explorerEntity, Optional<PlanetEntity> planetEntity) {
+
+        if (planetEntity.get().getExplorerAmount() <= planetEntity.get().getExplorerAmountLimit()) {
+            planetEntity.get().sumExplorerAmount();
             saveExplorer(explorerEntity);
+        }
         else
             throw new ExplorerException("Planet is full");
     }
+    public void prepareToCreateExplorerObj(ExplorerDto explorerDto) {
+
+        var planetEntity = validPlanetExplorerExistence(explorerDto);
+        var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto, planetEntity.get());
+        checkExplorerArgs(explorerDto);
+        validDirection(explorerDto, planetEntity.get());
+        createExplorerObj(explorerDto, explorerEntity, planetEntity);
+    }
+
 
     public String findAllExplorers() {
 

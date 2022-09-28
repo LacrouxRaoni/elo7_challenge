@@ -43,7 +43,7 @@ public class ExplorerController {
     @PostMapping
     public ResponseEntity postExplorer(@RequestBody ExplorerDto explorerDto){
         try {
-            explorerService.createExplorerObj(explorerDto);
+            explorerService.prepareToCreateExplorerObj(explorerDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Explorer added with success");
         } catch (ExplorerException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
