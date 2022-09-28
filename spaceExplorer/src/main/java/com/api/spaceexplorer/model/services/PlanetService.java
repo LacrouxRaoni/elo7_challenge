@@ -51,6 +51,7 @@ public class PlanetService {
             throw new PlanetException("Planet doesn't exists in Data Base");
         return planetEntity.get();
     }
+
     public void validAndDeletePlanet(PlanetDto planetDto) {
         var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         if (!planetEntity.isPresent())

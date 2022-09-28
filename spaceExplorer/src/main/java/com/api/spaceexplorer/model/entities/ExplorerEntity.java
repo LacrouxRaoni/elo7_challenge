@@ -99,13 +99,20 @@ public class ExplorerEntity {
 
     @Override
     public String toString() {
-        return "ExplorerEntity{" +
-                "id=" + id +
-                ", explorerName='" + explorerName + '\'' +
-                ", direction=" + direction +
-                ", x=" + x +
-                ", y=" + y +
-                ", planet=" + planet +
-                '}';
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Explorer{");
+        sb.append("\nid= ");
+        sb.append(id);
+        sb.append("\nexplorerName= ");
+        sb.append(explorerName);
+        sb.append("\naxis x= ");
+        sb.append(x);
+        sb.append("\naxis y= ");
+        sb.append(y);
+        sb.append("\nplanetName= ");
+        sb.append(getPlanet().getPlanetName() + "\n");
+        sb.append('}');
+        return sb.toString();
     }
 }

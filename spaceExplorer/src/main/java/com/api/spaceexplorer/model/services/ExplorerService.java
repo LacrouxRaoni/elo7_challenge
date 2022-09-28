@@ -10,6 +10,7 @@ import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,14 +81,34 @@ public class ExplorerService {
             throw new ExplorerException("Planet is full");
     }
 
+    public String findAllExplorers() {
+
+        StringBuilder sb = new StringBuilder();
+        List<ExplorerEntity> explorers = explorerRepository.findAll();
+        sb.append("Explorers{\n");
+        for (ExplorerEntity e : explorers){
+            sb.append("ExplorerName: ");
+            sb.append(e.getExplorerName() + "\n");
+        }
+        sb.append('}');
+       return sb.toString();
+    }
+
+    public ExplorerEntity getExplorerObject(ExplorerDto explorerDto) {
+        var explorerEntity = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
+        if (!explorerEntity.isPresent())
+            throw new ExplorerException("Explorer not found in data base\"");
+        return explorerEntity.get();
+    }
+
     public void validAndDeleteExplorer(ExplorerDto explorerDto) {
         checkExplorerArgs(explorerDto);
         var planetEntity = locatePlanet(explorerDto.getPlanetName());
         var explorerEntity = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
         if (!planetEntity.isPresent())
-            throw new ExplorerException("Planet didn't found in data base");
+            throw new ExplorerException("Planet not found in data base");
         if (!explorerEntity.isPresent())
-            throw new ExplorerException("Explorer didn't found in data base");
+            throw new ExplorerException("Explorer not found in data base");
         explorerEntity.get().getPlanet().decExplorerAmount();
         deleteExplorer(explorerEntity.get());
     }
@@ -100,5 +121,6 @@ public class ExplorerService {
     @Transactional
     public void deleteExplorer(ExplorerEntity explorerEntity) {
        explorerRepository.delete(explorerEntity); }
+
 
 }
