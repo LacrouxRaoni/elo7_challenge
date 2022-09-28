@@ -86,7 +86,9 @@ public class PlanetEntity {
         return explorerAmount;
     }
 
-
+    public void changePlanetName(String newPlanetName) {
+        this.planetName = newPlanetName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -126,5 +128,4 @@ public class PlanetEntity {
         sb.append('}');
         return sb.toString();
     }
-
 }

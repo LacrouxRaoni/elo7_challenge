@@ -4,12 +4,11 @@ import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.repositories.PlanetRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlanetService {
@@ -29,7 +28,7 @@ public class PlanetService {
     private static void checkPlanetArgs(PlanetDto planet) {
 
         if (planet.getPlanetName().matches("\\W*")) {
-            throw new PlanetException("Planet name should contains AlphaNumeric characters only");
+            throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
         if (planet.getWidth() <= 1 && planet.getHeight() <= 1){
             throw new PlanetException("Planet size must be greater than 0");
@@ -48,14 +47,14 @@ public class PlanetService {
 
         var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         if (!planetEntity.isPresent())
-            throw new PlanetException("Planet doesn't exists in Data Base");
+            throw new PlanetException("Planet doesn't exist in Data Base");
         return planetEntity.get();
     }
 
     public void validAndDeletePlanet(PlanetDto planetDto) {
         var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         if (!planetEntity.isPresent())
-            throw new PlanetException("Planet doesn't exists in Data Base");
+            throw new PlanetException("Planet doesn't exist in Data Base");
         deletePlanet(planetEntity.get());
     }
 
@@ -79,5 +78,17 @@ public class PlanetService {
     public void deletePlanet(PlanetEntity planetEntity) { planetRepository.delete(planetEntity); }
 
 
-
+    public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
+        if (!checkIfPlanetExists(planetDto.getPlanetName()))
+            throw new PlanetException("Planet doesn't exist in Data Base");
+        if (checkIfPlanetExists(planetDto.getNewPlanetName()))
+            throw new PlanetException("Planet already exists in Data Base");
+        if (planetDto.getNewPlanetName().matches("\\W*")) {
+            throw new PlanetException("Planet name should contain AlphaNumeric characters only");
+        }
+        Optional<PlanetEntity> planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        planet.get().changePlanetName(planetDto.getNewPlanetName());
+        savePlanet(planet.get());
+        return planet.get();
+    }
 }

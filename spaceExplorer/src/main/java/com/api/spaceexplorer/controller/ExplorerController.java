@@ -1,10 +1,8 @@
 package com.api.spaceexplorer.controller;
 
 import com.api.spaceexplorer.controller.exceptions.ExplorerException;
-import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
-import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.model.services.ExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
