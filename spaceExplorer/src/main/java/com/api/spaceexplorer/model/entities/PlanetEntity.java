@@ -27,6 +27,8 @@ public class PlanetEntity {
     private int height;
     private Integer explorerAmountLimit;
 
+    private Integer explorerAmount;
+
     @OneToMany(mappedBy = "planet", cascade = javax.persistence.CascadeType.ALL)
     private List<ExplorerEntity> explorers = new ArrayList<>();
 
@@ -37,10 +39,7 @@ public class PlanetEntity {
         this.width = width;
         this.height = height;
         this.explorerAmountLimit = explorerAmount;
-    }
-
-    public PlanetEntity(String planetName) {
-        this.planetName = planetName;
+        this.explorerAmount = 0;
     }
 
     public static PlanetEntity fromPlanetDto(PlanetDto planetDto){
@@ -51,6 +50,13 @@ public class PlanetEntity {
         return planet;
     }
 
+    public void sumExplorerAmount() {
+        this.explorerAmount += + 1;
+    }
+
+    public void decExplorerAmount() {
+        this.explorerAmount += - 1;
+    }
     public Integer getId() {
         return id;
     }
@@ -76,9 +82,11 @@ public class PlanetEntity {
         return explorers;
     }
 
-    public void setExplorer(List<ExplorerEntity> explorer) {
-        this.explorers = explorer;
+    public Integer getExplorerAmount() {
+        return explorerAmount;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -95,12 +103,28 @@ public class PlanetEntity {
 
     @Override
     public String toString() {
-        return "PlanetEntity{" +
-                "id=" + id +
-                ", planetName='" + planetName + '\'' +
-                ", width=" + width +
-                ", height=" + height +
-                ", explorerAmount=" + explorerAmountLimit +
-                '}';
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("PlanetInfo{");
+        sb.append("\nid= ");
+        sb.append(id);
+        sb.append("\nplanetName= ");
+        sb.append(planetName);
+        sb.append("\nwidth= ");
+        sb.append(width);
+        sb.append("\nheight= ");
+        sb.append(height);
+        sb.append("\nexplorerAmountInPlanet= ");
+        sb.append(explorerAmount);
+        sb.append("\nexplorerAmountLimit= ");
+        sb.append(explorerAmountLimit);
+        sb.append("\nexplorers in planet: \n");
+        for (ExplorerEntity c : explorers){
+            sb.append("explorer= ");
+            sb.append(c.getExplorerName() + "\n");
+        }
+        sb.append('}');
+        return sb.toString();
     }
+
 }
