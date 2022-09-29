@@ -143,7 +143,7 @@ public class ExplorerService {
     public ExplorerEntity validAndModifyName(ExplorerDto explorerDto) {
 
         validatePutNameArgs(explorerDto);
-        Optional<ExplorerEntity> explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
+        var explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
         explorer.get().changeExplorerName(explorerDto.getNewExplorerName());
         saveExplorer(explorer.get());
         return explorer.get();
@@ -169,4 +169,15 @@ public class ExplorerService {
     @Transactional
     public void deleteExplorer(ExplorerEntity explorerEntity) {
        explorerRepository.delete(explorerEntity); }
+
+    public void validAndMoveExplorer(ExplorerDto explorerDto) {
+        validateMoveArgs(explorerDto);
+
+    }
+
+    private void validateMoveArgs(ExplorerDto explorerDto) {
+        checkExplorerArgs(explorerDto);
+        if (!explorerDto.getMovement().matches("[LMR]*"))
+            throw new ExplorerException("move sequence must be L, M, R");
+    }
 }
