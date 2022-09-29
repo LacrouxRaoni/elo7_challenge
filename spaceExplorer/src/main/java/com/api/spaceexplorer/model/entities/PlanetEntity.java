@@ -57,6 +57,11 @@ public class PlanetEntity {
     public void decExplorerAmount() {
         this.explorerAmount += - 1;
     }
+
+    public void changePlanetName(String newPlanetName) {
+        this.planetName = newPlanetName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -85,7 +90,6 @@ public class PlanetEntity {
     public Integer getExplorerAmount() {
         return explorerAmount;
     }
-
 
 
     @Override
@@ -126,5 +130,4 @@ public class PlanetEntity {
         sb.append('}');
         return sb.toString();
     }
-
 }

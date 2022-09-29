@@ -11,6 +11,8 @@ public class PlanetDto {
         @NotBlank
         private int height;
 
+        private String newPlanetName;
+
         public String getPlanetName() {
                 return planetName;
         }
@@ -21,5 +23,9 @@ public class PlanetDto {
 
         public int getHeight() {
                 return height;
+        }
+
+        public String getNewPlanetName() {
+                return newPlanetName;
         }
 }

@@ -13,7 +13,6 @@ public class ExplorerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column(name = "explorer_name", nullable = false)
     private String explorerName;
     @Column(name = "movements")
@@ -56,6 +55,10 @@ public class ExplorerEntity {
                                     explorerDto.getY(),
                                     planetEntity);
         return explorer;
+    }
+
+    public void changeExplorerName(String explorerNewName) {
+        this.explorerName = explorerNewName;
     }
 
     public Long getId() {

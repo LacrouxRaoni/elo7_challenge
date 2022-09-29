@@ -4,12 +4,11 @@ import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.repositories.PlanetRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlanetService {
@@ -26,40 +25,27 @@ public class PlanetService {
         return planetRepository.existsByPlanetName(planetName);
     }
 
-    private static void checkPlanetArgs(PlanetDto planet) {
+    private static void checkPostArgs(PlanetDto planet) {
 
         if (planet.getPlanetName().matches("\\W*")) {
-            throw new PlanetException("Planet name should contains AlphaNumeric characters only");
+            throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
         if (planet.getWidth() <= 1 && planet.getHeight() <= 1){
             throw new PlanetException("Planet size must be greater than 0");
         }
     }
 
-    public void createPlanetObject(PlanetDto planetDto){
-        checkPlanetArgs(planetDto);
+    public void validatePlanetAndSaveInDb(PlanetDto planetDto){
+
+        checkPostArgs(planetDto);
         PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
         if (checkIfPlanetExists(planetEntity.getPlanetName()))
             throw new PlanetException("Planet already exists in Data Base");
         savePlanet(planetEntity);
     }
 
-    public PlanetEntity getPlanetObject(PlanetDto planetDto) {
+    public String getAll() {
 
-        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
-        if (!planetEntity.isPresent())
-            throw new PlanetException("Planet doesn't exists in Data Base");
-        return planetEntity.get();
-    }
-
-    public void validAndDeletePlanet(PlanetDto planetDto) {
-        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
-        if (!planetEntity.isPresent())
-            throw new PlanetException("Planet doesn't exists in Data Base");
-        deletePlanet(planetEntity.get());
-    }
-
-    public String findAll() {
         StringBuilder sb = new StringBuilder();
         List<PlanetEntity> list = planetRepository.findAll();
         sb.append("PlanetInfo{\n");
@@ -70,14 +56,50 @@ public class PlanetService {
         sb.append('}');
         return sb.toString();
     }
+
+    public PlanetEntity getPlanetObject(PlanetDto planetDto) {
+
+        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        if (!planetEntity.isPresent())
+            throw new PlanetException("Planet doesn't exist in Data Base");
+        return planetEntity.get();
+    }
+
+    public void validAndDeletePlanet(PlanetDto planetDto) {
+
+        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        if (!planetEntity.isPresent())
+            throw new PlanetException("Planet doesn't exist in Data Base");
+        deletePlanet(planetEntity.get());
+    }
+
+    private void validateArgsToModify(PlanetDto planetDto) {
+
+        if (!checkIfPlanetExists(planetDto.getPlanetName()))
+            throw new PlanetException("Planet doesn't exist in Data Base");
+        if (checkIfPlanetExists(planetDto.getNewPlanetName()))
+            throw new PlanetException("Planet already exists in Data Base");
+        if (planetDto.getNewPlanetName().matches("\\W*"))
+            throw new PlanetException("Planet name should contain AlphaNumeric characters only");
+    }
+
+    public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
+
+        validateArgsToModify(planetDto);
+        Optional<PlanetEntity> planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        planet.get().changePlanetName(planetDto.getNewPlanetName());
+        savePlanet(planet.get());
+        return planet.get();
+    }
+
     @Transactional
     public void savePlanet(PlanetEntity planetEntity) {
+
         planetRepository.save(planetEntity);
     }
 
     @Transactional
-    public void deletePlanet(PlanetEntity planetEntity) { planetRepository.delete(planetEntity); }
-
-
-
+    public void deletePlanet(PlanetEntity planetEntity) {
+        planetRepository.delete(planetEntity);
+    }
 }

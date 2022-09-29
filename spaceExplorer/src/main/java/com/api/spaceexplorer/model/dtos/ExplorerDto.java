@@ -4,10 +4,11 @@ import javax.validation.constraints.NotBlank;
 
 public class ExplorerDto {
 
-    @NotBlank
     private String planetName;
     @NotBlank
     private String explorerName;
+
+    private String newExplorerName;
 
     private String movement;
 
@@ -23,6 +24,10 @@ public class ExplorerDto {
 
     public String getExplorerName() {
         return explorerName;
+    }
+
+    public String getNewExplorerName() {
+        return newExplorerName;
     }
 
     public String getMovement() {

@@ -1,10 +1,8 @@
 package com.api.spaceexplorer.controller;
 
 import com.api.spaceexplorer.controller.exceptions.ExplorerException;
-import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
-import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.model.services.ExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,6 +43,26 @@ public class ExplorerController {
         try {
             explorerService.prepareToCreateExplorerObj(explorerDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Explorer added with success");
+        } catch (ExplorerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/name")
+    public ResponseEntity putExplorerName(@RequestBody ExplorerDto explorerDto) {
+        try{
+            ExplorerEntity explorer = explorerService.validAndModifyName(explorerDto);
+            return ResponseEntity.status(HttpStatus.OK).body(explorer.toString());
+        } catch (ExplorerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("move")
+    public ResponseEntity putExplorerMove(@RequestBody ExplorerDto explorerDto) {
+        try {
+            explorerService.validAndMoveExplorer(explorerDto);
+            return null;
         } catch (ExplorerException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
