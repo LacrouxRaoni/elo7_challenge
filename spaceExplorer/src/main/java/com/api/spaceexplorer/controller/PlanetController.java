@@ -26,7 +26,7 @@ public class PlanetController {
 
     @GetMapping("/all")
     public ResponseEntity getAllPlanets(){
-        return ResponseEntity.status(HttpStatus.OK).body(planetService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(planetService.getAll());
     }
     @GetMapping
     public ResponseEntity getPlanet(@RequestBody @Valid PlanetDto planetDto){
@@ -41,7 +41,7 @@ public class PlanetController {
     @PostMapping
     public ResponseEntity postPlanet(@RequestBody PlanetDto planetDto){
         try {
-            planetService.createPlanetObject(planetDto);
+            planetService.validatePlanetAndSaveInDb(planetDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Planet created with success");
         } catch (PlanetException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

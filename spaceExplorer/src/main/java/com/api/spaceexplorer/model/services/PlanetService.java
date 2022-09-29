@@ -25,7 +25,7 @@ public class PlanetService {
         return planetRepository.existsByPlanetName(planetName);
     }
 
-    private static void checkPlanetArgs(PlanetDto planet) {
+    private static void checkPostArgs(PlanetDto planet) {
 
         if (planet.getPlanetName().matches("\\W*")) {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
@@ -35,12 +35,26 @@ public class PlanetService {
         }
     }
 
-    public void createPlanetObject(PlanetDto planetDto){
-        checkPlanetArgs(planetDto);
+    public void validatePlanetAndSaveInDb(PlanetDto planetDto){
+
+        checkPostArgs(planetDto);
         PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
         if (checkIfPlanetExists(planetEntity.getPlanetName()))
             throw new PlanetException("Planet already exists in Data Base");
         savePlanet(planetEntity);
+    }
+
+    public String getAll() {
+
+        StringBuilder sb = new StringBuilder();
+        List<PlanetEntity> list = planetRepository.findAll();
+        sb.append("PlanetInfo{\n");
+        for (PlanetEntity c : list){
+            sb.append("planetName= ");
+            sb.append(c.getPlanetName() + "\n");
+        }
+        sb.append('}');
+        return sb.toString();
     }
 
     public PlanetEntity getPlanetObject(PlanetDto planetDto) {
@@ -52,43 +66,40 @@ public class PlanetService {
     }
 
     public void validAndDeletePlanet(PlanetDto planetDto) {
+
         var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         if (!planetEntity.isPresent())
             throw new PlanetException("Planet doesn't exist in Data Base");
         deletePlanet(planetEntity.get());
     }
 
-    public String findAll() {
-        StringBuilder sb = new StringBuilder();
-        List<PlanetEntity> list = planetRepository.findAll();
-        sb.append("PlanetInfo{\n");
-        for (PlanetEntity c : list){
-            sb.append("planetName= ");
-            sb.append(c.getPlanetName() + "\n");
-        }
-        sb.append('}');
-        return sb.toString();
-    }
-    @Transactional
-    public void savePlanet(PlanetEntity planetEntity) {
-        planetRepository.save(planetEntity);
-    }
+    private void validateArgsToModify(PlanetDto planetDto) {
 
-    @Transactional
-    public void deletePlanet(PlanetEntity planetEntity) { planetRepository.delete(planetEntity); }
-
-
-    public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
         if (!checkIfPlanetExists(planetDto.getPlanetName()))
             throw new PlanetException("Planet doesn't exist in Data Base");
         if (checkIfPlanetExists(planetDto.getNewPlanetName()))
             throw new PlanetException("Planet already exists in Data Base");
-        if (planetDto.getNewPlanetName().matches("\\W*")) {
+        if (planetDto.getNewPlanetName().matches("\\W*"))
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
-        }
+    }
+
+    public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
+
+        validateArgsToModify(planetDto);
         Optional<PlanetEntity> planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         planet.get().changePlanetName(planetDto.getNewPlanetName());
         savePlanet(planet.get());
         return planet.get();
+    }
+
+    @Transactional
+    public void savePlanet(PlanetEntity planetEntity) {
+
+        planetRepository.save(planetEntity);
+    }
+
+    @Transactional
+    public void deletePlanet(PlanetEntity planetEntity) {
+        planetRepository.delete(planetEntity);
     }
 }

@@ -57,6 +57,11 @@ public class PlanetEntity {
     public void decExplorerAmount() {
         this.explorerAmount += - 1;
     }
+
+    public void changePlanetName(String newPlanetName) {
+        this.planetName = newPlanetName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -86,9 +91,6 @@ public class PlanetEntity {
         return explorerAmount;
     }
 
-    public void changePlanetName(String newPlanetName) {
-        this.planetName = newPlanetName;
-    }
 
     @Override
     public boolean equals(Object o) {
