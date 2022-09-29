@@ -68,5 +68,4 @@ public class PlanetController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    
 }

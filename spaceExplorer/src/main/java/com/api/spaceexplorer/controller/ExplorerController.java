@@ -48,6 +48,16 @@ public class ExplorerController {
         }
     }
 
+    @PutMapping("/name")
+    public ResponseEntity putExplorerName(@RequestBody ExplorerDto explorerDto) {
+        try{
+            ExplorerEntity explorer = explorerService.validAndModifyName(explorerDto);
+            return ResponseEntity.status(HttpStatus.OK).body(explorer.toString());
+        } catch (ExplorerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping
     public ResponseEntity deleteExplorer(@RequestBody ExplorerDto explorerDto) {
         try {

@@ -1,6 +1,7 @@
 package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.ExplorerException;
+import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
@@ -129,6 +130,25 @@ public class ExplorerService {
         return explorerEntity.get();
     }
 
+    private void validatePutNameArgs(ExplorerDto explorerDto) {
+
+        if (!existByExplorerName(explorerDto.getExplorerName()))
+            throw new ExplorerException("Explorer doesn't exist in Data Base");
+        if (existByExplorerName(explorerDto.getNewExplorerName()))
+            throw new ExplorerException("Explorer already exist in Data Base");
+        if (explorerDto.getNewExplorerName().matches("\\W*"))
+            throw new ExplorerException("Explorer name should contain AlphaNumeric characters only");
+    }
+
+    public ExplorerEntity validAndModifyName(ExplorerDto explorerDto) {
+
+        validatePutNameArgs(explorerDto);
+        Optional<ExplorerEntity> explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
+        explorer.get().changeExplorerName(explorerDto.getNewExplorerName());
+        saveExplorer(explorer.get());
+        return explorer.get();
+    }
+
     public void validAndDeleteExplorer(ExplorerDto explorerDto) {
         checkExplorerArgs(explorerDto);
         var planetEntity = locatePlanet(explorerDto.getPlanetName());
@@ -149,6 +169,4 @@ public class ExplorerService {
     @Transactional
     public void deleteExplorer(ExplorerEntity explorerEntity) {
        explorerRepository.delete(explorerEntity); }
-
-
 }
