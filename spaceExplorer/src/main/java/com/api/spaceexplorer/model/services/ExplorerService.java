@@ -174,6 +174,7 @@ public class ExplorerService {
         Optional<ExplorerEntity> explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
         String planet[][] = drawPlanet(explorer.get());
         moveExplorer(planet, explorerDto.getMovement(), explorer.get());
+        saveExplorer(explorer.get());
     }
 
     private void validateMoveArgs(ExplorerDto explorerDto) {
@@ -211,6 +212,8 @@ public class ExplorerService {
     }
 
     private void moveExplorer(String[][] planet, String movement, ExplorerEntity explorer) {
+
+
 
         for (int i = 0; i < movement.length(); i++){
             if(movement.charAt(i) == 'L'){
@@ -283,12 +286,12 @@ public class ExplorerService {
     private void moveNorth(String[][] planet, ExplorerEntity explorer) {
 
         if (explorer.getX() == 0){
-            if (planet[planet.length - 1][explorer.getY()].matches(String.valueOf('0'))){
+            if (planet[planet.length - 1][explorer.getY()].matches("x|0")){
                 explorer.axisUpdate((planet.length - 1), explorer.getY());
             } else {
                 throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
-        } else if (planet[explorer.getX() - 1][explorer.getY()].matches(String.valueOf('0'))){
+        } else if (planet[explorer.getX() - 1][explorer.getY()].matches("x|0")){
                 explorer.axisUpdate(explorer.getX() - 1, explorer.getY());
         } else {
             throw new ExplorerException("There is an explorer ahead, aborting movement.");
@@ -298,12 +301,12 @@ public class ExplorerService {
     private void moveWest(String[][] planet, ExplorerEntity explorer) {
 
         if (explorer.getY() == planet[explorer.getX()].length - 1){
-            if (planet[explorer.getX()][0].matches(String.valueOf('0'))){
+            if (planet[explorer.getX()][0].matches(String.valueOf("x|0"))){
                 explorer.axisUpdate((explorer.getX()), 0);
             } else {
                 throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
-        } else if (planet[explorer.getX()][explorer.getY() + 1].matches(String.valueOf('0'))){
+        } else if (planet[explorer.getX()][explorer.getY() + 1].matches("x|0")){
             explorer.axisUpdate(explorer.getX(), explorer.getY() + 1);
         } else {
             throw new ExplorerException("There is an explorer ahead, aborting movement.");
@@ -313,12 +316,12 @@ public class ExplorerService {
     private void moveSouth(String[][] planet, ExplorerEntity explorer) {
 
         if (explorer.getX() == planet.length - 1){
-            if (planet[0][explorer.getY()].matches(String.valueOf('0'))){
+            if (planet[0][explorer.getY()].matches("x|0")){
                 explorer.axisUpdate(0, explorer.getY());
             } else {
                 throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
-        } else if (planet[explorer.getX() + 1][explorer.getY()].matches(String.valueOf('0'))){
+        } else if (planet[explorer.getX() + 1][explorer.getY()].matches("x|0")){
             explorer.axisUpdate(explorer.getX() + 1, explorer.getY());
         } else {
             throw new ExplorerException("There is an explorer ahead, aborting movement.");
@@ -328,12 +331,12 @@ public class ExplorerService {
     private void moveEast(String[][] planet, ExplorerEntity explorer) {
 
         if (explorer.getY() == 0){
-            if (planet[explorer.getX()][planet[explorer.getX()].length - 1].matches(String.valueOf('0'))){
+            if (planet[explorer.getX()][planet[explorer.getX()].length - 1].matches("x|0")){
                 explorer.axisUpdate((explorer.getX()), planet[explorer.getX()].length - 1);
             } else {
                 throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
-        } else if (planet[explorer.getX()][explorer.getY() - 1].matches(String.valueOf('0'))){
+        } else if (planet[explorer.getX()][explorer.getY() - 1].matches("x|0")){
             explorer.axisUpdate(explorer.getX(), explorer.getY() - 1);
         } else {
             throw new ExplorerException("There is an explorer ahead, aborting movement.");
