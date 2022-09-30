@@ -58,7 +58,7 @@ public class ExplorerController {
         }
     }
 
-    @PutMapping("move")
+    @PutMapping("/move")
     public ResponseEntity putExplorerMove(@RequestBody ExplorerDto explorerDto) {
         try {
             explorerService.validAndMoveExplorer(explorerDto);

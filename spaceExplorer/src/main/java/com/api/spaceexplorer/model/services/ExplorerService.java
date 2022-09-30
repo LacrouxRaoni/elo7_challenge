@@ -1,7 +1,6 @@
 package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.ExplorerException;
-import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
@@ -50,9 +49,9 @@ public class ExplorerService {
 
         if (explorerDto.getX() < 0 || explorerDto.getY() < 0)
             throw new ExplorerException("axis x and y can't be less than 0");
-        if (explorerDto.getX() > planetEntity.getHeight())
+        if (explorerDto.getX() > planetEntity.getHeight() - 1)
             throw new ExplorerException("axis x out of planet area");
-        if (explorerDto.getY() > planetEntity.getWidth())
+        if (explorerDto.getY() > planetEntity.getWidth() - 1)
             throw new ExplorerException("axis y out of planet area");
     }
 
@@ -172,12 +171,172 @@ public class ExplorerService {
 
     public void validAndMoveExplorer(ExplorerDto explorerDto) {
         validateMoveArgs(explorerDto);
-
+        Optional<ExplorerEntity> explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
+        String planet[][] = drawPlanet(explorer.get());
+        moveExplorer(planet, explorerDto.getMovement(), explorer.get());
     }
 
     private void validateMoveArgs(ExplorerDto explorerDto) {
+
         checkExplorerArgs(explorerDto);
         if (!explorerDto.getMovement().matches("[LMR]*"))
-            throw new ExplorerException("move sequence must be L, M, R");
+            throw new ExplorerException("move sequence must be L, M, R in Uppercase");
+    }
+
+    private String[][] drawPlanet(ExplorerEntity explorer) {
+
+        PlanetEntity planetData = explorer.getPlanet();
+        List<ExplorerEntity> explorers = planetData.getExplorer();
+        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
+
+        for (int i = 0; i < planetData.getHeight(); i++){
+            for (int j = 0; j < planetData.getWidth(); j++){
+                planet[i][j] = String.valueOf('0');
+                if (i == explorer.getX() && j == explorer.getY())
+                    planet[i][j] = String.valueOf('x');
+                else{
+                    for (ExplorerEntity c : explorers){
+                        if (i == c.getX() && j == c.getY()){
+                            planet[i][j] = String.valueOf('s');
+                            break ;
+                        }
+                    }
+                }
+                System.out.print(planet[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+        return planet;
+    }
+
+    private void moveExplorer(String[][] planet, String movement, ExplorerEntity explorer) {
+
+        for (int i = 0; i < movement.length(); i++){
+            if(movement.charAt(i) == 'L'){
+                turnLeft(explorer);
+            }
+            else if (movement.charAt(i) == 'R'){
+                turnRight(explorer);
+            }
+            else if (movement.charAt(i) == 'M'){
+                moveForward(planet, explorer);
+            }
+        }
+        drawPlanet(explorer);
+    }
+
+    private void turnRight(ExplorerEntity explorer) {
+
+        switch (explorer.getDirection()){
+            case NORTH:
+                explorer.changeExplorerDirection(ExplorerEnum.WEST);
+                break ;
+            case WEST:
+                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
+                break ;
+            case SOUTH:
+                explorer.changeExplorerDirection(ExplorerEnum.EAST);
+                break ;
+            case EAST:
+                explorer.changeExplorerDirection(ExplorerEnum.NORTH);
+                break ;
+        }
+    }
+
+    private void turnLeft(ExplorerEntity explorer) {
+
+        switch (explorer.getDirection()){
+            case NORTH:
+                explorer.changeExplorerDirection(ExplorerEnum.EAST);
+                break ;
+            case EAST:
+                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
+                break ;
+            case SOUTH:
+                explorer.changeExplorerDirection(ExplorerEnum.WEST);
+                break ;
+            case WEST:
+                explorer.changeExplorerDirection(ExplorerEnum.NORTH);
+                break ;
+        }
+    }
+
+    private void moveForward(String[][] planet, ExplorerEntity explorer) {
+
+        switch (explorer.getDirection()){
+            case NORTH:
+                moveNorth(planet, explorer);
+                break ;
+            case WEST:
+                moveWest(planet, explorer);
+                break ;
+            case SOUTH:
+                moveSouth(planet, explorer);
+                break ;
+            case EAST:
+                moveEast(planet, explorer);
+                break ;
+        }
+    }
+
+    private void moveNorth(String[][] planet, ExplorerEntity explorer) {
+
+        if (explorer.getX() == 0){
+            if (planet[planet.length - 1][explorer.getY()].matches(String.valueOf('0'))){
+                explorer.axisUpdate((planet.length - 1), explorer.getY());
+            } else {
+                throw new ExplorerException("There is an explorer ahead, aborting movement.");
+            }
+        } else if (planet[explorer.getX() - 1][explorer.getY()].matches(String.valueOf('0'))){
+                explorer.axisUpdate(explorer.getX() - 1, explorer.getY());
+        } else {
+            throw new ExplorerException("There is an explorer ahead, aborting movement.");
+        }
+    }
+
+    private void moveWest(String[][] planet, ExplorerEntity explorer) {
+
+        if (explorer.getY() == planet[explorer.getX()].length - 1){
+            if (planet[explorer.getX()][0].matches(String.valueOf('0'))){
+                explorer.axisUpdate((explorer.getX()), 0);
+            } else {
+                throw new ExplorerException("There is an explorer ahead, aborting movement.");
+            }
+        } else if (planet[explorer.getX()][explorer.getY() + 1].matches(String.valueOf('0'))){
+            explorer.axisUpdate(explorer.getX(), explorer.getY() + 1);
+        } else {
+            throw new ExplorerException("There is an explorer ahead, aborting movement.");
+        }
+    }
+
+    private void moveSouth(String[][] planet, ExplorerEntity explorer) {
+
+        if (explorer.getX() == planet.length - 1){
+            if (planet[0][explorer.getY()].matches(String.valueOf('0'))){
+                explorer.axisUpdate(0, explorer.getY());
+            } else {
+                throw new ExplorerException("There is an explorer ahead, aborting movement.");
+            }
+        } else if (planet[explorer.getX() + 1][explorer.getY()].matches(String.valueOf('0'))){
+            explorer.axisUpdate(explorer.getX() + 1, explorer.getY());
+        } else {
+            throw new ExplorerException("There is an explorer ahead, aborting movement.");
+        }
+    }
+
+    private void moveEast(String[][] planet, ExplorerEntity explorer) {
+
+        if (explorer.getY() == 0){
+            if (planet[explorer.getX()][planet[explorer.getX()].length - 1].matches(String.valueOf('0'))){
+                explorer.axisUpdate((explorer.getX()), planet[explorer.getX()].length - 1);
+            } else {
+                throw new ExplorerException("There is an explorer ahead, aborting movement.");
+            }
+        } else if (planet[explorer.getX()][explorer.getY() - 1].matches(String.valueOf('0'))){
+            explorer.axisUpdate(explorer.getX(), explorer.getY() - 1);
+        } else {
+            throw new ExplorerException("There is an explorer ahead, aborting movement.");
+        }
     }
 }
