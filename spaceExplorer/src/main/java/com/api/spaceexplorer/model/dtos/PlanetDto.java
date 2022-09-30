@@ -10,7 +10,6 @@ public class PlanetDto {
         private int width;
         @NotBlank
         private int height;
-
         private String newPlanetName;
 
         public String getPlanetName() {

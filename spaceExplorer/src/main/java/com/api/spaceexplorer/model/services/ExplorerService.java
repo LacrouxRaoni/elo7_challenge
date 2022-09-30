@@ -92,20 +92,18 @@ public class ExplorerService {
 
     private void createExplorerObj(ExplorerDto explorerDto, ExplorerEntity explorerEntity, Optional<PlanetEntity> planetEntity) {
 
-        if (planetEntity.get().getExplorerAmount() <= planetEntity.get().getExplorerAmountLimit()) {
             planetEntity.get().sumExplorerAmount();
             saveExplorer(explorerEntity);
-        }
-        else
-            throw new ExplorerException("Planet is full");
     }
     public void prepareToCreateExplorerObj(ExplorerDto explorerDto) {
 
         var planetEntity = validPlanetExplorerExistence(explorerDto);
-        var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto, planetEntity.get());
-        checkExplorerArgs(explorerDto);
-        validDirection(explorerDto, planetEntity.get());
-        createExplorerObj(explorerDto, explorerEntity, planetEntity);
+        if (planetEntity.get().getExplorerAmount() <= planetEntity.get().getExplorerAmountLimit()) {
+            var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto, planetEntity.get());
+            checkExplorerArgs(explorerDto);
+            validDirection(explorerDto, planetEntity.get());
+            createExplorerObj(explorerDto, explorerEntity, planetEntity);
+        }
     }
 
 
@@ -167,14 +165,15 @@ public class ExplorerService {
 
     @Transactional
     public void deleteExplorer(ExplorerEntity explorerEntity) {
-       explorerRepository.delete(explorerEntity); }
+           explorerRepository.delete(explorerEntity); }
 
-    public void validAndMoveExplorer(ExplorerDto explorerDto) {
+    public ExplorerEntity validAndMoveExplorer(ExplorerDto explorerDto) {
         validateMoveArgs(explorerDto);
         Optional<ExplorerEntity> explorer = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
-        String planet[][] = drawPlanet(explorer.get());
+        String planet[][] = PlanetService.drawPlanet(explorer.get());
         moveExplorer(planet, explorerDto.getMovement(), explorer.get());
         saveExplorer(explorer.get());
+        return explorer.get();
     }
 
     private void validateMoveArgs(ExplorerDto explorerDto) {
@@ -184,84 +183,19 @@ public class ExplorerService {
             throw new ExplorerException("move sequence must be L, M, R in Uppercase");
     }
 
-    private String[][] drawPlanet(ExplorerEntity explorer) {
-
-        PlanetEntity planetData = explorer.getPlanet();
-        List<ExplorerEntity> explorers = planetData.getExplorer();
-        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
-
-        for (int i = 0; i < planetData.getHeight(); i++){
-            for (int j = 0; j < planetData.getWidth(); j++){
-                planet[i][j] = String.valueOf('0');
-                if (i == explorer.getX() && j == explorer.getY())
-                    planet[i][j] = String.valueOf('x');
-                else{
-                    for (ExplorerEntity c : explorers){
-                        if (i == c.getX() && j == c.getY()){
-                            planet[i][j] = String.valueOf('s');
-                            break ;
-                        }
-                    }
-                }
-                System.out.print(planet[i][j]);
-            }
-            System.out.println();
-        }
-        System.out.println();
-        return planet;
-    }
 
     private void moveExplorer(String[][] planet, String movement, ExplorerEntity explorer) {
 
-
-
         for (int i = 0; i < movement.length(); i++){
             if(movement.charAt(i) == 'L'){
-                turnLeft(explorer);
+                ExplorerEnum.turnLeft(explorer);
             }
             else if (movement.charAt(i) == 'R'){
-                turnRight(explorer);
+                ExplorerEnum.turnRight(explorer);
             }
             else if (movement.charAt(i) == 'M'){
                 moveForward(planet, explorer);
             }
-        }
-        drawPlanet(explorer);
-    }
-
-    private void turnRight(ExplorerEntity explorer) {
-
-        switch (explorer.getDirection()){
-            case NORTH:
-                explorer.changeExplorerDirection(ExplorerEnum.WEST);
-                break ;
-            case WEST:
-                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
-            case SOUTH:
-                explorer.changeExplorerDirection(ExplorerEnum.EAST);
-                break ;
-            case EAST:
-                explorer.changeExplorerDirection(ExplorerEnum.NORTH);
-                break ;
-        }
-    }
-
-    private void turnLeft(ExplorerEntity explorer) {
-
-        switch (explorer.getDirection()){
-            case NORTH:
-                explorer.changeExplorerDirection(ExplorerEnum.EAST);
-                break ;
-            case EAST:
-                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
-            case SOUTH:
-                explorer.changeExplorerDirection(ExplorerEnum.WEST);
-                break ;
-            case WEST:
-                explorer.changeExplorerDirection(ExplorerEnum.NORTH);
-                break ;
         }
     }
 

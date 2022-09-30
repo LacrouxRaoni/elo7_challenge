@@ -65,6 +65,11 @@ public class ExplorerEntity {
         this.direction = cardinal;
     }
 
+    public void axisUpdate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public Long getId() {
         return id;
     }
@@ -125,10 +130,5 @@ public class ExplorerEntity {
         sb.append(getPlanet().getPlanetName() + "\n");
         sb.append('}');
         return sb.toString();
-    }
-
-    public void axisUpdate(int x, int y) {
-        this.x = x;
-        this.y = y;
     }
 }

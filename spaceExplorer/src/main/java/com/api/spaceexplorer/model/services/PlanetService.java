@@ -2,6 +2,7 @@ package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
+import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
 import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.springframework.stereotype.Service;
@@ -101,5 +102,30 @@ public class PlanetService {
     @Transactional
     public void deletePlanet(PlanetEntity planetEntity) {
         planetRepository.delete(planetEntity);
+    }
+
+
+    public static String[][] drawPlanet(ExplorerEntity explorer) {
+
+        PlanetEntity planetData = explorer.getPlanet();
+        List<ExplorerEntity> explorers = planetData.getExplorer();
+        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
+
+        for (int i = 0; i < planetData.getHeight(); i++){
+            for (int j = 0; j < planetData.getWidth(); j++){
+                planet[i][j] = String.valueOf('0');
+                if (i == explorer.getX() && j == explorer.getY())
+                    planet[i][j] = String.valueOf('x');
+                else{
+                    for (ExplorerEntity c : explorers){
+                        if (i == c.getX() && j == c.getY()){
+                            planet[i][j] = String.valueOf('s');
+                            break ;
+                        }
+                    }
+                }
+            }
+        }
+        return planet;
     }
 }

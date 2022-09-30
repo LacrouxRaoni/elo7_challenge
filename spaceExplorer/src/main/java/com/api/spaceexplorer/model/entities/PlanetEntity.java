@@ -1,9 +1,6 @@
 package com.api.spaceexplorer.model.entities;
 
-import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,7 +12,6 @@ import java.util.Objects;
 public class PlanetEntity {
 
     @Id
-
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
