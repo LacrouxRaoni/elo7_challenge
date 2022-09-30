@@ -61,6 +61,15 @@ public class ExplorerEntity {
         this.explorerName = explorerNewName;
     }
 
+    public void changeExplorerDirection(ExplorerEnum cardinal) {
+        this.direction = cardinal;
+    }
+
+    public void axisUpdate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public Long getId() {
         return id;
     }
@@ -115,6 +124,8 @@ public class ExplorerEntity {
         sb.append(x);
         sb.append("\naxis y= ");
         sb.append(y);
+        sb.append("\ncardinal= ");
+        sb.append(direction);
         sb.append("\nplanetName= ");
         sb.append(getPlanet().getPlanetName() + "\n");
         sb.append('}');
