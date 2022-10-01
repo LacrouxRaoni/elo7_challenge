@@ -30,7 +30,7 @@ public class PlanetService {
         if (planet.getPlanetName().matches("\\W*")) {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
-        if (planet.getWidth() <= 1 && planet.getHeight() <= 1){
+        if (planet.getWidth() <= 1 || planet.getHeight() <= 1){
             throw new PlanetException("Planet size must be greater than 0");
         }
     }

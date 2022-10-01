@@ -178,83 +178,83 @@ public class ExplorerService {
 
     private void moveForward(String[][] planet, ExplorerEntity explorer) {
 
-        int i = 0;
+        boolean routeCalculator = true;
         switch (explorer.getDirection()){
             case NORTH:
-                i = moveNorth(planet, explorer);
+                routeCalculator = moveNorth(planet, explorer);
                 break ;
             case WEST:
-                i = moveWest(planet, explorer);
+                routeCalculator = moveWest(planet, explorer);
                 break ;
             case SOUTH:
-                i = moveSouth(planet, explorer);
+                routeCalculator = moveSouth(planet, explorer);
                 break ;
             case EAST:
-                i = moveEast(planet, explorer);
+                routeCalculator = moveEast(planet, explorer);
                 break ;
         }
-        if (i > 0)
+        if (!routeCalculator)
             throw new ExplorerException("There is an explorer ahead, aborting movement.");
     }
 
-    private int moveNorth(String[][] planet, ExplorerEntity explorer) {
+    private boolean moveNorth(String[][] planet, ExplorerEntity explorer) {
 
         if (explorer.getX() == 0){
             if (planet[planet.length - 1][explorer.getY()].matches("[x0]")){
                 explorer.axisUpdate((planet.length - 1), explorer.getY());
             } else {
-                return (1);
+                return false;
             }
         } else if (planet[explorer.getX() - 1][explorer.getY()].matches("[x0]")){
                 explorer.axisUpdate(explorer.getX() - 1, explorer.getY());
         } else {
-            return (1);
+            return false;
         }
-        return (0);
+        return true;
     }
 
-    private int moveWest(String[][] planet, ExplorerEntity explorer) {
+    private boolean moveWest(String[][] planet, ExplorerEntity explorer) {
         if (explorer.getY() == planet[explorer.getX()].length - 1){
             if (planet[explorer.getX()][0].matches("[x0]")){
                 explorer.axisUpdate((explorer.getX()), 0);
             } else {
-                return (1);
+                return false;
             }
         } else if (planet[explorer.getX()][explorer.getY() + 1].matches("[x0]")){
             explorer.axisUpdate(explorer.getX(), explorer.getY() + 1);
         } else {
-            return (1);
+            return false;
         }
-        return (0);
+        return true;
     }
 
-    private int moveSouth(String[][] planet, ExplorerEntity explorer) {
+    private boolean moveSouth(String[][] planet, ExplorerEntity explorer) {
         if (explorer.getX() == planet.length - 1){
             if (planet[0][explorer.getY()].matches("[x0]")){
                 explorer.axisUpdate(0, explorer.getY());
             } else {
-                return (1);
+                return false;
             }
         } else if (planet[explorer.getX() + 1][explorer.getY()].matches("[x0]")){
             explorer.axisUpdate(explorer.getX() + 1, explorer.getY());
         } else {
-            return (1);
+            return false;
         }
-        return (0);
+        return true;
     }
 
-    private int moveEast(String[][] planet, ExplorerEntity explorer) {
+    private boolean moveEast(String[][] planet, ExplorerEntity explorer) {
         if (explorer.getY() == 0){
             if (planet[explorer.getX()][planet[explorer.getX()].length - 1].matches("[x0]")){
                 explorer.axisUpdate((explorer.getX()), planet[explorer.getX()].length - 1);
             } else {
-                return (1);
+                return false;
             }
         } else if (planet[explorer.getX()][explorer.getY() - 1].matches("[x0]")){
             explorer.axisUpdate(explorer.getX(), explorer.getY() - 1);
         } else {
-            return (1);
+            return false;
         }
-        return (0);
+        return true;
     }
 }
