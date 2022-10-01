@@ -21,14 +21,12 @@ public class PlanetService {
         this.planetRepository = planetRepository;
     }
 
-
     public Optional<PlanetEntity> locatePlanet(String planetName) {
         var planetEntity = planetRepository.findPlanetEntityByPlanetName(planetName);
         return planetEntity;
     }
 
     private static void checkPostArgs(PlanetDto planet) {
-
         if (planet.getPlanetName().matches("\\W*")) {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
@@ -38,9 +36,8 @@ public class PlanetService {
     }
 
     public void validatePlanetAndSaveInDb(PlanetDto planetDto){
-
         checkPostArgs(planetDto);
-        PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
+        var planetEntity = PlanetEntity.fromPlanetDto(planetDto);
 
         if (locatePlanet(planetEntity.getPlanetName()).isPresent())
             throw new PlanetException("Planet already exists in Data Base");
@@ -48,7 +45,6 @@ public class PlanetService {
     }
 
     public String getAll() {
-
         StringBuilder sb = new StringBuilder();
         var list = planetRepository.findAll();
         sb.append("PlanetInfo{\n");
@@ -61,7 +57,6 @@ public class PlanetService {
     }
 
     public PlanetEntity getPlanetObject(PlanetDto planetDto) {
-
         var planetEntity =  locatePlanet(planetDto.getPlanetName());
         if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
@@ -69,7 +64,6 @@ public class PlanetService {
     }
 
     public void validAndDeletePlanet(PlanetDto planetDto) {
-
         var planetEntity =  locatePlanet(planetDto.getPlanetName());
         if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
@@ -77,7 +71,6 @@ public class PlanetService {
     }
 
     private void validateArgsToModify(PlanetDto planetDto) {
-
         if (locatePlanet(planetDto.getPlanetName()).isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         if (locatePlanet(planetDto.getNewPlanetName()).isPresent())
@@ -87,9 +80,10 @@ public class PlanetService {
     }
 
     public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
-
         validateArgsToModify(planetDto);
-        var planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        var planet = locatePlanet(planetDto.getPlanetName());
+        if (planet.isEmpty())
+            throw new PlanetException("Planet doesn't exist in Data Base");
         planet.get().changePlanetName(planetDto.getNewPlanetName());
         savePlanet(planet.get());
         return planet.get();
@@ -97,7 +91,6 @@ public class PlanetService {
 
 
     private static void checkInExplorerList(int i, int j, List<ExplorerEntity> explorers, String[][] planet) {
-
         for (ExplorerEntity c : explorers){
             if (i == c.getX() && j == c.getY()){
                 planet[i][j] = String.valueOf('s');
@@ -107,7 +100,6 @@ public class PlanetService {
     }
 
     public static String[][] drawPlanet(ExplorerEntity explorer) {
-
         var planetData = explorer.getPlanet();
         var explorers = planetData.getExplorer();
         String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
@@ -117,7 +109,7 @@ public class PlanetService {
                 planet[i][j] = String.valueOf('0');
                 if (i == explorer.getX() && j == explorer.getY())
                     planet[i][j] = String.valueOf('x');
-                else{
+                else {
                     checkInExplorerList(i, j, explorers, planet);
                 }
             }
@@ -127,7 +119,6 @@ public class PlanetService {
 
     @Transactional
     public void savePlanet(PlanetEntity planetEntity) {
-
         planetRepository.save(planetEntity);
     }
 
@@ -136,4 +127,9 @@ public class PlanetService {
         planetRepository.delete(planetEntity);
     }
 
+    public void planetCapacity(PlanetEntity planetEntity) {
+        if (planetEntity.getExplorerAmount() == planetEntity.getExplorerAmountLimit()) {
+            throw new ExplorerException("Planet is full!");
+        }
+    }
 }
