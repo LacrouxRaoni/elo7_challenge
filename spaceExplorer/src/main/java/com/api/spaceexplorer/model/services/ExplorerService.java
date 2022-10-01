@@ -18,18 +18,12 @@ public class ExplorerService {
 
     private final ExplorerRepository explorerRepository;
     private final PlanetRepository planetRepository;
-    public ExplorerService(ExplorerRepository explorerRepository, PlanetRepository planetRepository) {
+    private final PlanetService planetService;
+
+    public ExplorerService(ExplorerRepository explorerRepository, PlanetRepository planetRepository, PlanetService planetService) {
         this.explorerRepository = explorerRepository;
         this.planetRepository = planetRepository;
-    }
-
-
-    private Optional<PlanetEntity> locatePlanet(String planetName) {
-        var planetEntity = planetRepository.findPlanetEntityByPlanetName(planetName);
-        if (!planetEntity.isPresent()) {
-            throw new ExplorerException("Can't find planet in Data Base");
-        }
-        return planetEntity;
+        this.planetService = planetService;
     }
 
     private boolean existByExplorerName(String explorerName) {
@@ -86,7 +80,7 @@ public class ExplorerService {
     private Optional<PlanetEntity> validPlanetExplorerExistence(ExplorerDto explorerDto) {
         if (existByExplorerName(explorerDto.getExplorerName()))
             throw new ExplorerException("Explorer already exists in Data Base");
-        var planetEntity = locatePlanet(explorerDto.getPlanetName());
+        var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
         return planetEntity;
     }
 
@@ -148,7 +142,7 @@ public class ExplorerService {
 
     public void validAndDeleteExplorer(ExplorerDto explorerDto) {
         checkExplorerArgs(explorerDto);
-        var planetEntity = locatePlanet(explorerDto.getPlanetName());
+        var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
         var explorerEntity = explorerRepository.findExplorerEntityByExplorerName(explorerDto.getExplorerName());
         if (!planetEntity.isPresent())
             throw new ExplorerException("Planet not found in data base");

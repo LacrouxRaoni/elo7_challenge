@@ -1,5 +1,6 @@
 package com.api.spaceexplorer.model.services;
 
+import com.api.spaceexplorer.controller.exceptions.ExplorerException;
 import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
@@ -21,9 +22,9 @@ public class PlanetService {
     }
 
 
-    private boolean checkIfPlanetExists(String planetName) {
-
-        return planetRepository.existsByPlanetName(planetName);
+    public Optional<PlanetEntity> locatePlanet(String planetName) {
+        var planetEntity = planetRepository.findPlanetEntityByPlanetName(planetName);
+        return planetEntity;
     }
 
     private static void checkPostArgs(PlanetDto planet) {
@@ -40,7 +41,8 @@ public class PlanetService {
 
         checkPostArgs(planetDto);
         PlanetEntity planetEntity = PlanetEntity.fromPlanetDto(planetDto);
-        if (checkIfPlanetExists(planetEntity.getPlanetName()))
+
+        if (locatePlanet(planetEntity.getPlanetName()).isPresent())
             throw new PlanetException("Planet already exists in Data Base");
         savePlanet(planetEntity);
     }
@@ -48,11 +50,11 @@ public class PlanetService {
     public String getAll() {
 
         StringBuilder sb = new StringBuilder();
-        List<PlanetEntity> list = planetRepository.findAll();
+        var list = planetRepository.findAll();
         sb.append("PlanetInfo{\n");
         for (PlanetEntity c : list){
             sb.append("planetName= ");
-            sb.append(c.getPlanetName() + "\n");
+            sb.append(c.getPlanetName()).append("\n");
         }
         sb.append('}');
         return sb.toString();
@@ -60,25 +62,25 @@ public class PlanetService {
 
     public PlanetEntity getPlanetObject(PlanetDto planetDto) {
 
-        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
-        if (!planetEntity.isPresent())
+        var planetEntity =  locatePlanet(planetDto.getPlanetName());
+        if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         return planetEntity.get();
     }
 
     public void validAndDeletePlanet(PlanetDto planetDto) {
 
-        var planetEntity =  planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
-        if (!planetEntity.isPresent())
+        var planetEntity =  locatePlanet(planetDto.getPlanetName());
+        if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         deletePlanet(planetEntity.get());
     }
 
     private void validateArgsToModify(PlanetDto planetDto) {
 
-        if (!checkIfPlanetExists(planetDto.getPlanetName()))
+        if (locatePlanet(planetDto.getPlanetName()).isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
-        if (checkIfPlanetExists(planetDto.getNewPlanetName()))
+        if (locatePlanet(planetDto.getNewPlanetName()).isPresent())
             throw new PlanetException("Planet already exists in Data Base");
         if (planetDto.getNewPlanetName().matches("\\W*"))
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
@@ -87,10 +89,40 @@ public class PlanetService {
     public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
 
         validateArgsToModify(planetDto);
-        Optional<PlanetEntity> planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
+        var planet = planetRepository.findPlanetEntityByPlanetName(planetDto.getPlanetName());
         planet.get().changePlanetName(planetDto.getNewPlanetName());
         savePlanet(planet.get());
         return planet.get();
+    }
+
+
+    private static void checkInExplorerList(int i, int j, List<ExplorerEntity> explorers, String[][] planet) {
+
+        for (ExplorerEntity c : explorers){
+            if (i == c.getX() && j == c.getY()){
+                planet[i][j] = String.valueOf('s');
+                break ;
+            }
+        }
+    }
+
+    public static String[][] drawPlanet(ExplorerEntity explorer) {
+
+        var planetData = explorer.getPlanet();
+        var explorers = planetData.getExplorer();
+        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
+
+        for (int i = 0; i < planetData.getHeight(); i++){
+            for (int j = 0; j < planetData.getWidth(); j++){
+                planet[i][j] = String.valueOf('0');
+                if (i == explorer.getX() && j == explorer.getY())
+                    planet[i][j] = String.valueOf('x');
+                else{
+                    checkInExplorerList(i, j, explorers, planet);
+                }
+            }
+        }
+        return planet;
     }
 
     @Transactional
@@ -104,28 +136,4 @@ public class PlanetService {
         planetRepository.delete(planetEntity);
     }
 
-
-    public static String[][] drawPlanet(ExplorerEntity explorer) {
-
-        PlanetEntity planetData = explorer.getPlanet();
-        List<ExplorerEntity> explorers = planetData.getExplorer();
-        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
-
-        for (int i = 0; i < planetData.getHeight(); i++){
-            for (int j = 0; j < planetData.getWidth(); j++){
-                planet[i][j] = String.valueOf('0');
-                if (i == explorer.getX() && j == explorer.getY())
-                    planet[i][j] = String.valueOf('x');
-                else{
-                    for (ExplorerEntity c : explorers){
-                        if (i == c.getX() && j == c.getY()){
-                            planet[i][j] = String.valueOf('s');
-                            break ;
-                        }
-                    }
-                }
-            }
-        }
-        return planet;
-    }
 }
