@@ -15,8 +15,6 @@ public class ExplorerEntity {
     private Long id;
     @Column(name = "explorer_name", nullable = false)
     private String explorerName;
-    @Column(name = "movements")
-    private String movement;
 
     @Column(name = "direction")
     @Enumerated(EnumType.STRING)
@@ -30,13 +28,6 @@ public class ExplorerEntity {
     private PlanetEntity planet;
 
     public ExplorerEntity() {
-    }
-
-    public ExplorerEntity(String explorerName, ExplorerEnum direction, int x, int y) {
-        this.explorerName = explorerName;
-        this.direction = direction;
-        this.x = x;
-        this.y = y;
     }
 
     public ExplorerEntity(String explorerName, ExplorerEnum direction, int x, int y, PlanetEntity planet) {
@@ -70,16 +61,8 @@ public class ExplorerEntity {
         this.y = y;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getExplorerName() {
         return explorerName;
-    }
-
-    public String getMovement() {
-        return movement;
     }
 
     public ExplorerEnum getDirection() {
@@ -103,12 +86,12 @@ public class ExplorerEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExplorerEntity that = (ExplorerEntity) o;
-        return x == that.x && y == that.y && Objects.equals(id, that.id) && Objects.equals(explorerName, that.explorerName) && Objects.equals(movement, that.movement) && direction == that.direction && Objects.equals(planet, that.planet);
+        return x == that.x && y == that.y && Objects.equals(id, that.id) && Objects.equals(explorerName, that.explorerName) && direction == that.direction && Objects.equals(planet, that.planet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, explorerName, movement, direction, x, y, planet);
+        return Objects.hash(id, explorerName, direction, x, y, planet);
     }
 
     @Override

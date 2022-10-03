@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "planet")
+@Table(name = "planets")
 public class PlanetEntity {
 
     @Id
@@ -21,11 +21,12 @@ public class PlanetEntity {
     private int width;
     @Column(name = "size_x")
     private int height;
+    @Column(name = "explorer_amount_limit")
     private Integer explorerAmountLimit;
-
+    @Column(name = "explorer_capacity")
     private Integer explorerAmount;
 
-    @OneToMany(mappedBy = "planet", cascade = javax.persistence.CascadeType.ALL)
+    @OneToMany(mappedBy = "planets", cascade = javax.persistence.CascadeType.ALL)
     private List<ExplorerEntity> explorers = new ArrayList<>();
 
     public PlanetEntity() {}

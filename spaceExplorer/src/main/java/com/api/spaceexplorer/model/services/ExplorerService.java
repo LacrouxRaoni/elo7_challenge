@@ -69,15 +69,19 @@ public class ExplorerService {
         validCardinal(explorerDto.getDirection());
     }
 
+    private static void validObjArgs(ExplorerDto explorer, PlanetEntity planet){
+        checkExplorerArgs(explorer.getExplorerName());
+        checkExplorerArgs(explorer.getPlanetName());
+        validDirection(explorer, planet);
+    }
+
     public void prepareToCreateExplorerObj(ExplorerDto explorerDto) {
         var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
         if(checkIfExplorerExist(explorerDto.getExplorerName()).isPresent())
             throw new ExplorerException("Explorer already exists in Data Base");
         planetService.planetCapacity(planetEntity.get());
         var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto, planetEntity.get());
-        checkExplorerArgs(explorerDto.getExplorerName());
-        checkExplorerArgs(explorerDto.getPlanetName());
-        validDirection(explorerDto, planetEntity.get());
+        validObjArgs(explorerDto, planetEntity.get());
         planetEntity.get().sumExplorerAmount();
         saveExplorer(explorerEntity);
     }
@@ -119,39 +123,6 @@ public class ExplorerService {
         if (explorer.isEmpty())
             throw new ExplorerException("Explorer not found in data base\"");
         explorer.get().changeExplorerName(explorerDto.getNewExplorerName());
-        saveExplorer(explorer.get());
-        return explorer.get();
-    }
-
-    public void validAndDeleteExplorer(ExplorerDto explorerDto) {
-        checkExplorerArgs(explorerDto.getExplorerName());
-        var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
-        var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
-
-        if (explorerEntity.isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
-        if (planetEntity.isEmpty())
-            throw new ExplorerException("Planet not found in data base");
-        explorerEntity.get().getPlanet().decExplorerAmount();
-        deleteExplorer(explorerEntity.get());
-    }
-
-    @Transactional
-    public void saveExplorer(ExplorerEntity explorerEntity) {
-        explorerRepository.save(explorerEntity);
-    }
-
-    @Transactional
-    public void deleteExplorer(ExplorerEntity explorerEntity) {
-           explorerRepository.delete(explorerEntity); }
-
-    public ExplorerEntity validAndMoveExplorer(ExplorerDto explorerDto) {
-        validateMoveArgs(explorerDto);
-        var explorer = checkIfExplorerExist(explorerDto.getExplorerName());
-        if (explorer.isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
-        String[][] planet = PlanetService.drawPlanet(explorer.get());
-        moveExplorer(planet, explorerDto.getMovement(), explorer.get());
         saveExplorer(explorer.get());
         return explorer.get();
     }
@@ -257,4 +228,37 @@ public class ExplorerService {
         }
         return true;
     }
+
+    public ExplorerEntity validAndMoveExplorer(ExplorerDto explorerDto) {
+        validateMoveArgs(explorerDto);
+        var explorer = checkIfExplorerExist(explorerDto.getExplorerName());
+        if (explorer.isEmpty())
+            throw new ExplorerException("Explorer not found in data base\"");
+        String[][] planet = PlanetService.drawPlanet(explorer.get());
+        moveExplorer(planet, explorerDto.getMovement(), explorer.get());
+        saveExplorer(explorer.get());
+        return explorer.get();
+    }
+
+    public void validAndDeleteExplorer(ExplorerDto explorerDto) {
+        checkExplorerArgs(explorerDto.getExplorerName());
+        var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
+        var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
+
+        if (explorerEntity.isEmpty())
+            throw new ExplorerException("Explorer not found in data base\"");
+        if (planetEntity.isEmpty())
+            throw new ExplorerException("Planet not found in data base");
+        explorerEntity.get().getPlanet().decExplorerAmount();
+        deleteExplorer(explorerEntity.get());
+    }
+
+    @Transactional
+    public void saveExplorer(ExplorerEntity explorerEntity) {
+        explorerRepository.save(explorerEntity);
+    }
+
+    @Transactional
+    public void deleteExplorer(ExplorerEntity explorerEntity) {
+        explorerRepository.delete(explorerEntity); }
 }

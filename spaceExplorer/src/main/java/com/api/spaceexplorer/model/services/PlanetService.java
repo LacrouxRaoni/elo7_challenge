@@ -22,8 +22,7 @@ public class PlanetService {
     }
 
     public Optional<PlanetEntity> locatePlanet(String planetName) {
-        var planetEntity = planetRepository.findPlanetEntityByPlanetName(planetName);
-        return planetEntity;
+        return planetRepository.findPlanetEntityByPlanetName(planetName);
     }
 
     private static void checkPostArgs(PlanetDto planet) {
@@ -38,7 +37,6 @@ public class PlanetService {
     public void validatePlanetAndSaveInDb(PlanetDto planetDto){
         checkPostArgs(planetDto);
         var planetEntity = PlanetEntity.fromPlanetDto(planetDto);
-
         if (locatePlanet(planetEntity.getPlanetName()).isPresent())
             throw new PlanetException("Planet already exists in Data Base");
         savePlanet(planetEntity);
@@ -63,14 +61,8 @@ public class PlanetService {
         return planetEntity.get();
     }
 
-    public void validAndDeletePlanet(PlanetDto planetDto) {
-        var planetEntity =  locatePlanet(planetDto.getPlanetName());
-        if (planetEntity.isEmpty())
-            throw new PlanetException("Planet doesn't exist in Data Base");
-        deletePlanet(planetEntity.get());
-    }
 
-    private void validateArgsToModify(PlanetDto planetDto) {
+    private void validateArgs(PlanetDto planetDto) {
         if (locatePlanet(planetDto.getPlanetName()).isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         if (locatePlanet(planetDto.getNewPlanetName()).isPresent())
@@ -79,8 +71,8 @@ public class PlanetService {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
     }
 
-    public PlanetEntity modifyPlanetName(PlanetDto planetDto) {
-        validateArgsToModify(planetDto);
+    public PlanetEntity checkArgsToModifyPlanetName(PlanetDto planetDto) {
+        validateArgs(planetDto);
         var planet = locatePlanet(planetDto.getPlanetName());
         if (planet.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
@@ -103,7 +95,6 @@ public class PlanetService {
         var planetData = explorer.getPlanet();
         var explorers = planetData.getExplorer();
         String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
-
         for (int i = 0; i < planetData.getHeight(); i++){
             for (int j = 0; j < planetData.getWidth(); j++){
                 planet[i][j] = String.valueOf('0');
@@ -117,6 +108,19 @@ public class PlanetService {
         return planet;
     }
 
+    public void planetCapacity(PlanetEntity planetEntity) {
+        if (planetEntity.getExplorerAmount() == planetEntity.getExplorerAmountLimit()) {
+            throw new ExplorerException("Planet is full!");
+        }
+    }
+
+    public void validAndDeletePlanet(PlanetDto planetDto) {
+        var planetEntity =  locatePlanet(planetDto.getPlanetName());
+        if (planetEntity.isEmpty())
+            throw new PlanetException("Planet doesn't exist in Data Base");
+        deletePlanet(planetEntity.get());
+    }
+
     @Transactional
     public void savePlanet(PlanetEntity planetEntity) {
         planetRepository.save(planetEntity);
@@ -127,9 +131,4 @@ public class PlanetService {
         planetRepository.delete(planetEntity);
     }
 
-    public void planetCapacity(PlanetEntity planetEntity) {
-        if (planetEntity.getExplorerAmount() == planetEntity.getExplorerAmountLimit()) {
-            throw new ExplorerException("Planet is full!");
-        }
-    }
 }

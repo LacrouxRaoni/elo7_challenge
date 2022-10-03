@@ -29,6 +29,7 @@ public class PlanetController {
     public ResponseEntity getAllPlanets(){
         return ResponseEntity.status(HttpStatus.OK).body(planetService.getAll());
     }
+
     @GetMapping
     public ResponseEntity getPlanet(@RequestBody @Valid PlanetDto planetDto){
         try {
@@ -52,7 +53,7 @@ public class PlanetController {
     @PutMapping
     public ResponseEntity putPlanet(@RequestBody PlanetDto planetDto){
         try {
-            PlanetEntity planet = planetService.modifyPlanetName(planetDto);
+            PlanetEntity planet = planetService.checkArgsToModifyPlanetName(planetDto);
             return ResponseEntity.status(HttpStatus.OK).body(planet.toString());
         } catch (PlanetException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
