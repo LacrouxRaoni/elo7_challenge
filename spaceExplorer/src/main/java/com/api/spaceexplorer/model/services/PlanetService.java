@@ -74,8 +74,6 @@ public class PlanetService {
     public PlanetEntity checkArgsToModifyPlanetName(PlanetDto planetDto) {
         validateArgs(planetDto);
         var planet = locatePlanet(planetDto.getPlanetName());
-        if (planet.isEmpty())
-            throw new PlanetException("Planet doesn't exist in Data Base");
         planet.get().changePlanetName(planetDto.getNewPlanetName());
         savePlanet(planet.get());
         return planet.get();

@@ -19,6 +19,11 @@ public class PlanetDto {
                 this.height = height;
         }
 
+        public PlanetDto(String planetName, String newPlanetName) {
+                this.planetName = planetName;
+                this.newPlanetName = newPlanetName;
+        }
+
         public String getPlanetName() {
                 return planetName;
         }
