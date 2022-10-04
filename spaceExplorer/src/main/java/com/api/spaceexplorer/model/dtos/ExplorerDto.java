@@ -18,6 +18,9 @@ public class ExplorerDto {
 
     private int y;
 
+    public ExplorerDto() {
+    }
+
     public ExplorerDto(String planetName, String explorerName, String direction, int x, int y) {
         this.planetName = planetName;
         this.explorerName = explorerName;

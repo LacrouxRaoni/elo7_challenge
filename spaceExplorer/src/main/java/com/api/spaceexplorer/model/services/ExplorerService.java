@@ -51,22 +51,9 @@ public class ExplorerService {
         }
     }
 
-    private static void validCardinal(String cardinal) {
-        switch (cardinal.toUpperCase()){
-            case "NORTH":
-            case "SOUTH":
-            case "WEST":
-            case "EAST":
-                break ;
-            default:
-                throw new ExplorerException("invalid Cardinal");
-        }
-    }
-
     private static void validDirection(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         validAxisOutOfBounds(explorerDto, planetEntity);
         validAxisInSamePosition(explorerDto, planetEntity);
-        validCardinal(explorerDto.getDirection());
     }
 
     private static void validObjArgs(ExplorerDto explorer, PlanetEntity planet){
@@ -80,7 +67,9 @@ public class ExplorerService {
         if(checkIfExplorerExist(explorerDto.getExplorerName()).isPresent())
             throw new ExplorerException("Explorer already exists in Data Base");
         planetService.planetCapacity(planetEntity.get());
-        var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto, planetEntity.get());
+        var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto,
+                                                planetEntity.get(),
+                                                ExplorerEnum.validCardinal(explorerDto.getDirection()));
         validObjArgs(explorerDto, planetEntity.get());
         planetEntity.get().sumExplorerAmount();
         saveExplorer(explorerEntity);

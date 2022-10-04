@@ -13,10 +13,14 @@ public class PlanetDto {
 
         private String newPlanetName;
 
+
         public PlanetDto(String planetName, int width, int height) {
                 this.planetName = planetName;
                 this.width = width;
                 this.height = height;
+        }
+
+        public PlanetDto() {
         }
 
         public PlanetDto(String planetName, String newPlanetName) {

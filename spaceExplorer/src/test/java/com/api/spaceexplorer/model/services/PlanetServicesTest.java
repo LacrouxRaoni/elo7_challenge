@@ -1,10 +1,8 @@
 package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.PlanetException;
-import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
-import com.api.spaceexplorer.repositories.PlanetRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,6 @@ public class PlanetServicesTest {
 
     @Autowired
     private PlanetService planetService;
-    @Autowired
-    private ExplorerService explorerService;
 
 
     @Test

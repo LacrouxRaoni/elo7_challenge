@@ -38,10 +38,10 @@ public class ExplorerEntity {
         this.planet = planet;
     }
 
-    public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto, PlanetEntity planetEntity){
+    public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto, PlanetEntity planetEntity, String cardinal){
         ExplorerEntity explorer = new ExplorerEntity(
                                     explorerDto.getExplorerName(),
-                                    ExplorerEnum.valueOf(explorerDto.getDirection()),
+                                    ExplorerEnum.valueOf(cardinal),
                                     explorerDto.getX(),
                                     explorerDto.getY(),
                                     planetEntity);
