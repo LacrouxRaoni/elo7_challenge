@@ -29,6 +29,18 @@ public class ExplorerDto {
         this.y = y;
     }
 
+    public ExplorerDto(String explorerName, String newExplorerName) {
+        this.explorerName = explorerName;
+        this.newExplorerName = newExplorerName;
+    }
+
+    public static ExplorerDto movements(String explorerName, String movement) {
+        ExplorerDto move = new ExplorerDto();
+        move.explorerName = explorerName;
+        move.movement = movement;
+        return move;
+    }
+
     public String getPlanetName() {
         return planetName;
     }

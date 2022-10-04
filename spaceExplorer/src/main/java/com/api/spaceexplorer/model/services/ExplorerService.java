@@ -90,7 +90,7 @@ public class ExplorerService {
     public ExplorerEntity getExplorerObject(ExplorerDto explorerDto) {
         var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
         if (explorerEntity.isEmpty()){
-            throw new ExplorerException("Explorer not found in data base\"");
+            throw new ExplorerException("Explorer not found in data base");
         }
         return explorerEntity.get();
     }
@@ -98,7 +98,7 @@ public class ExplorerService {
     private void validatePutNameArgs(ExplorerDto explorerDto) {
 
         if (checkIfExplorerExist(explorerDto.getExplorerName()).isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
+            throw new ExplorerException("Explorer not found in data base");
         if (checkIfExplorerExist(explorerDto.getNewExplorerName()).isPresent())
             throw new ExplorerException("Explorer already exist in Data Base");
         if (explorerDto.getNewExplorerName().matches("\\W*"))
@@ -109,8 +109,6 @@ public class ExplorerService {
 
         validatePutNameArgs(explorerDto);
         var explorer = checkIfExplorerExist(explorerDto.getExplorerName());
-        if (explorer.isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
         explorer.get().changeExplorerName(explorerDto.getNewExplorerName());
         saveExplorer(explorer.get());
         return explorer.get();
