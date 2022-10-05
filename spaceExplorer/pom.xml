@@ -54,9 +54,17 @@
             <version>3.3.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <artifactId>h2</artifactId>
+            <groupId>com.h2database</groupId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-
     <build>
         <plugins>
             <plugin>
