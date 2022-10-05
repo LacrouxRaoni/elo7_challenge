@@ -14,7 +14,6 @@ public class PlanetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
     @Column(name = "planet_name")
     private String planetName;
     @Column(name = "size_y")
@@ -26,7 +25,7 @@ public class PlanetEntity {
     @Column(name = "explorer_capacity")
     private Integer explorerAmount;
 
-    @OneToMany(fetch = FetchType.EAGER ,mappedBy = "planet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "planet", cascade = CascadeType.ALL)
     private List<ExplorerEntity> explorers = new ArrayList<>();
 
     public PlanetEntity() {}
@@ -59,10 +58,6 @@ public class PlanetEntity {
         this.planetName = newPlanetName;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public String getPlanetName() {
         return planetName;
     }
@@ -78,7 +73,6 @@ public class PlanetEntity {
     public int getExplorerAmountLimit() {
         return explorerAmountLimit;
     }
-
 
     public List<ExplorerEntity> getExplorer() {
         return explorers;

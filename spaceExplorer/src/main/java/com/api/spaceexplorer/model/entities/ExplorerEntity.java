@@ -2,7 +2,6 @@ package com.api.spaceexplorer.model.entities;
 
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.enums.ExplorerEnum;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -24,7 +23,6 @@ public class ExplorerEntity {
     private int x;
     @Column(name = "coo_y", nullable = false)
     private int y;
-
     @ManyToOne()
     private PlanetEntity planet;
 
