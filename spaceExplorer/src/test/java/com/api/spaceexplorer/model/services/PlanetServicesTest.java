@@ -1,8 +1,11 @@
 package com.api.spaceexplorer.model.services;
 
 import com.api.spaceexplorer.controller.exceptions.PlanetException;
+import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
+import com.api.spaceexplorer.model.entities.ExplorerEntity;
 import com.api.spaceexplorer.model.entities.PlanetEntity;
+import com.api.spaceexplorer.model.enums.ExplorerEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ public class PlanetServicesTest {
     @Autowired
     private PlanetService planetService;
 
+    @Autowired
+    private ExplorerService explorerService;
 
     @Test
     @DisplayName("planet name with no alphanumeric")
@@ -172,7 +177,21 @@ public class PlanetServicesTest {
         }
         PlanetDto dto = new PlanetDto("test", "test1");
         PlanetEntity planet = planetService.checkArgsToModifyPlanetName(dto);
-        assertEquals("test1", planet.getPlanetName());
+        if (!planet.getPlanetName().equals("test1")) {
+            fail("expected: test1");
+        }
+
+
     }
 
+    @Test
+    @DisplayName("draw planet mst return String[][]")
+    public void drawPlanet_will_return_a_string_matrix_containing_x_in_position_0_0() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
+        String [][]test = PlanetService.drawPlanet(explorer);
+        if (!test[0][0].matches(String.valueOf('x'))){
+            fail("expected: x");
+        }
+    }
 }

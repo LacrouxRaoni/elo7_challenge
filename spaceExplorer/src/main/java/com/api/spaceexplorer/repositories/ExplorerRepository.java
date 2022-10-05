@@ -8,9 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface ExplorerRepository extends JpaRepository<ExplorerEntity, Integer> {
-
-    boolean existsByExplorerName(String explorerName);
-
     Optional<ExplorerEntity> findExplorerEntityByExplorerName(String name);
-    void deleteExplorerEntityByExplorerName(String explorerName);
+
+    void deleteExplorerEntityByExplorerName(String name);
+
 }

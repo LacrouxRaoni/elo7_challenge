@@ -29,7 +29,7 @@ public class PlanetService {
         if (planet.getPlanetName().matches("\\W*")) {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
-        if (planet.getWidth() <= 1 || planet.getHeight() <= 1){
+        if (planet.getWidth() < 1 || planet.getHeight() < 1){
             throw new PlanetException("Planet size must be greater than 0");
         }
     }
@@ -80,30 +80,13 @@ public class PlanetService {
     }
 
 
-    private static void checkInExplorerList(int i, int j, List<ExplorerEntity> explorers, String[][] planet) {
+    public boolean checkInExplorerList(int y, int x, List<ExplorerEntity> explorers) {
         for (ExplorerEntity c : explorers){
-            if (i == c.getX() && j == c.getY()){
-                planet[i][j] = String.valueOf('s');
-                break ;
+            if (y == c.getY() && x == c.getX()){
+                throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
         }
-    }
-
-    public static String[][] drawPlanet(ExplorerEntity explorer) {
-        var planetData = explorer.getPlanet();
-        var explorers = planetData.getExplorer();
-        String [][]planet = new String[planetData.getHeight()][planetData.getWidth()];
-        for (int i = 0; i < planetData.getHeight(); i++){
-            for (int j = 0; j < planetData.getWidth(); j++){
-                planet[i][j] = String.valueOf('0');
-                if (i == explorer.getX() && j == explorer.getY())
-                    planet[i][j] = String.valueOf('x');
-                else {
-                    checkInExplorerList(i, j, explorers, planet);
-                }
-            }
-        }
-        return planet;
+        return true;
     }
 
     public void planetCapacity(PlanetEntity planetEntity) {

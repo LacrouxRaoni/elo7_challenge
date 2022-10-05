@@ -5,10 +5,13 @@ import com.api.spaceexplorer.controller.exceptions.PlanetException;
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.dtos.PlanetDto;
 import com.api.spaceexplorer.model.entities.ExplorerEntity;
+import com.api.spaceexplorer.model.entities.PlanetEntity;
+import com.api.spaceexplorer.model.enums.ExplorerEnum;
 import com.api.spaceexplorer.repositories.ExplorerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -242,4 +245,105 @@ public class ExplorerServiceTest {
         fail("expected: move sequence must be L, M, R in Uppercase");
     }
 
+    @Test
+    @DisplayName("Explorer put move must throw exception")
+    public void validAndMoveExplorer_will_return_message_explorer_not_found_in_db() {
+        ExplorerDto dto = ExplorerDto.movements("explorer", "LMR");
+        try{
+            explorerService.validAndMoveExplorer(dto);
+        } catch (ExplorerException e) {
+            assertEquals("Explorer not found in data base", e.getMessage());
+            return;
+        }
+        fail("expected: Explorer not found in data base");
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing east direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_east() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.NORTH, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
+            fail("expected: East");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing south direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_south() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.SOUTH.equals(explorer.getDirection())){
+            fail("expected: South");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing west direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_west() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.SOUTH, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.WEST.equals(explorer.getDirection())){
+            fail("expected: West");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing north direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_north() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.NORTH.equals(explorer.getDirection())){
+            fail("expected: North");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing west direction")
+    public void moveExplorer_must_turn_explorer_right_and_stop_west() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.NORTH, 0, 0, planet);
+        ExplorerEnum.turnRight(explorer);
+        if (!ExplorerEnum.WEST.equals(explorer.getDirection())){
+            fail("expected: west");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing west south")
+    public void moveExplorer_must_turn_explorer_right_and_stop_south() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
+        ExplorerEnum.turnRight(explorer);
+        if (!ExplorerEnum.SOUTH.equals(explorer.getDirection())){
+            fail("expected: south");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing west direction")
+    public void moveExplorer_must_turn_explorer_right_and_stop_east() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.SOUTH, 0, 0, planet);
+        ExplorerEnum.turnRight(explorer);
+        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
+            fail("expected: east");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing west direction")
+    public void moveExplorer_must_turn_explorer_right_and_stop_north() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
+        ExplorerEnum.turnRight(explorer);
+        if (!ExplorerEnum.NORTH.equals(explorer.getDirection())){
+            fail("expected: north");
+        }
+    }
+    //validAndMoveExplorer
 }

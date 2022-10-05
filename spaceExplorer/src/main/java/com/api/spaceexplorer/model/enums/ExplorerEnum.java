@@ -27,15 +27,15 @@ public enum ExplorerEnum {
 
         switch (explorer.getDirection()){
             case NORTH:
-                explorer.changeExplorerDirection(ExplorerEnum.WEST);
-                break ;
-            case WEST:
-                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
-            case SOUTH:
                 explorer.changeExplorerDirection(ExplorerEnum.EAST);
                 break ;
             case EAST:
+                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
+                break ;
+            case SOUTH:
+                explorer.changeExplorerDirection(ExplorerEnum.WEST);
+                break ;
+            case WEST:
                 explorer.changeExplorerDirection(ExplorerEnum.NORTH);
                 break ;
         }
@@ -45,15 +45,15 @@ public enum ExplorerEnum {
 
         switch (explorer.getDirection()){
             case NORTH:
-                explorer.changeExplorerDirection(ExplorerEnum.EAST);
-                break ;
-            case EAST:
-                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
-            case SOUTH:
                 explorer.changeExplorerDirection(ExplorerEnum.WEST);
                 break ;
             case WEST:
+                explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
+                break ;
+            case SOUTH:
+                explorer.changeExplorerDirection(ExplorerEnum.EAST);
+                break ;
+            case EAST:
                 explorer.changeExplorerDirection(ExplorerEnum.NORTH);
                 break ;
         }

@@ -2,6 +2,7 @@ package com.api.spaceexplorer.model.entities;
 
 import com.api.spaceexplorer.model.dtos.ExplorerDto;
 import com.api.spaceexplorer.model.enums.ExplorerEnum;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class ExplorerEntity {
         this.direction = cardinal;
     }
 
-    public void axisUpdate(int x, int y) {
+    public void axisUpdate(int y, int x) {
         this.x = x;
         this.y = y;
     }
