@@ -43,7 +43,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer existence exception")
     public void prepare_to_create_obj_will_return_explorer_existence_exception() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer_test", "NORTH", 1, 1);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer_test", "NORTH", 2, 2);
         explorerService.prepareToCreateExplorerObj(dto);
         try {
             explorerService.prepareToCreateExplorerObj(dto);
@@ -86,7 +86,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer axis exception x > planet height")
     public void validAxisOutOfBounds_will_return_x_must_return_exception_greater_than_planet_size() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer2", "NORTH", 5, 0);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer2", "NORTH", 6, 1);
         try {
             explorerService.prepareToCreateExplorerObj(dto);
         } catch (ExplorerException e) {
@@ -100,7 +100,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer axis exception y > planet width")
     public void validAxisOutOfBounds_will_return_y_must_return_exception_greater_than_planet_size() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer3", "NORTH", 2, 5);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer3", "NORTH", 2, 6);
         try {
             explorerService.prepareToCreateExplorerObj(dto);
         } catch (ExplorerException e) {
@@ -114,9 +114,9 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer axis exception same position as other explorer")
     public void validAxisOutOfBounds_will_return_axis_can_not_be_registered_in_same_position_from_other_explorer() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer4", "NORTH", 2, 0);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer4", "NORTH", 5, 5);
         explorerService.prepareToCreateExplorerObj(dto);
-        ExplorerDto dto1 = new ExplorerDto("planet_test", "explorer5", "NORTH", 2, 0);
+        ExplorerDto dto1 = new ExplorerDto("planet_test", "explorer5", "NORTH", 5, 5);
         try {
             explorerService.prepareToCreateExplorerObj(dto1);
         } catch (ExplorerException e) {
@@ -144,8 +144,8 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer get must return to string")
     public void findAllExplorers_will_return_all_explorers_in_string_format() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer7", "NORTH", 0, 1);
-        ExplorerDto dto1 = new ExplorerDto("planet_test", "explorer8", "south", 0, 0);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer7", "NORTH", 2, 1);
+        ExplorerDto dto1 = new ExplorerDto("planet_test", "explorer8", "south", 1, 1);
         explorerService.prepareToCreateExplorerObj(dto);
         explorerService.prepareToCreateExplorerObj(dto1);
         System.out.println(explorerService.findAllExplorers());
@@ -193,7 +193,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer put args exception")
     public void validatePutNameArgs_will_return_explorer_already_registered_in_dba() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer12", "NORTH", 1, 0);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer12", "NORTH", 1, 2);
         explorerService.prepareToCreateExplorerObj(dto);
         ExplorerDto dto1 = new ExplorerDto("explorer12", "explorer12");
         try {
@@ -209,7 +209,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer put args exception")
     public void validatePutNameArgs_will_return_explorer_must_be_composed_with_alphanumerics() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer11", "NORTH", 0, 3);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer11", "NORTH", 1, 3);
         explorerService.prepareToCreateExplorerObj(dto);
         ExplorerDto dto1 = new ExplorerDto("explorer11", "$");
         try {
@@ -225,7 +225,7 @@ public class ExplorerServiceTest {
     @DisplayName("Explorer put ok status return updated Entity")
     public void validAndModifyName_will_return_new_explorer_name() {
         create_planet();
-        ExplorerDto dto = new ExplorerDto("planet_test", "explorer12", "NORTH", 0, 4);
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer12", "NORTH", 1, 4);
         explorerService.prepareToCreateExplorerObj(dto);
         ExplorerDto dto1 = new ExplorerDto("explorer12", "explorer13");
         ExplorerEntity explorer = explorerService.validAndModifyName(dto1);
@@ -259,32 +259,10 @@ public class ExplorerServiceTest {
     }
 
     @Test
-    @DisplayName("explorer must stop pointing east direction")
-    public void moveExplorer_must_turn_explorer_left_and_stop_east() {
-        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.NORTH, 0, 0, planet);
-        ExplorerEnum.turnLeft(explorer);
-        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
-            fail("expected: East");
-        }
-    }
-
-    @Test
-    @DisplayName("explorer must stop pointing south direction")
-    public void moveExplorer_must_turn_explorer_left_and_stop_south() {
-        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
-        ExplorerEnum.turnLeft(explorer);
-        if (!ExplorerEnum.SOUTH.equals(explorer.getDirection())){
-            fail("expected: South");
-        }
-    }
-
-    @Test
     @DisplayName("explorer must stop pointing west direction")
     public void moveExplorer_must_turn_explorer_left_and_stop_west() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.SOUTH, 0, 0, planet);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.NORTH, 0, 0, planet);
         ExplorerEnum.turnLeft(explorer);
         if (!ExplorerEnum.WEST.equals(explorer.getDirection())){
             fail("expected: West");
@@ -292,10 +270,32 @@ public class ExplorerServiceTest {
     }
 
     @Test
+    @DisplayName("explorer must stop pointing south direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_south() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.SOUTH.equals(explorer.getDirection())){
+            fail("expected: South");
+        }
+    }
+
+    @Test
+    @DisplayName("explorer must stop pointing east direction")
+    public void moveExplorer_must_turn_explorer_left_and_stop_east() {
+        PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.SOUTH, 0, 0, planet);
+        ExplorerEnum.turnLeft(explorer);
+        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
+            fail("expected: East");
+        }
+    }
+
+    @Test
     @DisplayName("explorer must stop pointing north direction")
     public void moveExplorer_must_turn_explorer_left_and_stop_north() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
         ExplorerEnum.turnLeft(explorer);
         if (!ExplorerEnum.NORTH.equals(explorer.getDirection())){
             fail("expected: North");
@@ -303,13 +303,13 @@ public class ExplorerServiceTest {
     }
 
     @Test
-    @DisplayName("explorer must stop pointing west direction")
-    public void moveExplorer_must_turn_explorer_right_and_stop_west() {
+    @DisplayName("explorer must stop pointing east direction")
+    public void moveExplorer_must_turn_explorer_right_and_stop_east() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
         ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.NORTH, 0, 0, planet);
         ExplorerEnum.turnRight(explorer);
-        if (!ExplorerEnum.WEST.equals(explorer.getDirection())){
-            fail("expected: west");
+        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
+            fail("expected: East");
         }
     }
 
@@ -317,7 +317,7 @@ public class ExplorerServiceTest {
     @DisplayName("explorer must stop pointing west south")
     public void moveExplorer_must_turn_explorer_right_and_stop_south() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
         ExplorerEnum.turnRight(explorer);
         if (!ExplorerEnum.SOUTH.equals(explorer.getDirection())){
             fail("expected: south");
@@ -326,24 +326,23 @@ public class ExplorerServiceTest {
 
     @Test
     @DisplayName("explorer must stop pointing west direction")
-    public void moveExplorer_must_turn_explorer_right_and_stop_east() {
+    public void moveExplorer_must_turn_explorer_right_and_stop_west() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
         ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.SOUTH, 0, 0, planet);
         ExplorerEnum.turnRight(explorer);
-        if (!ExplorerEnum.EAST.equals(explorer.getDirection())){
-            fail("expected: east");
+        if (!ExplorerEnum.WEST.equals(explorer.getDirection())){
+            fail("expected: West");
         }
     }
 
     @Test
-    @DisplayName("explorer must stop pointing west direction")
+    @DisplayName("explorer must stop pointing north direction")
     public void moveExplorer_must_turn_explorer_right_and_stop_north() {
         PlanetEntity planet = new PlanetEntity("test", 5 , 5, 25);
-        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.EAST, 0, 0, planet);
+        ExplorerEntity explorer = new ExplorerEntity("explorer", ExplorerEnum.WEST, 0, 0, planet);
         ExplorerEnum.turnRight(explorer);
         if (!ExplorerEnum.NORTH.equals(explorer.getDirection())){
             fail("expected: north");
         }
     }
-    //validAndMoveExplorer
 }

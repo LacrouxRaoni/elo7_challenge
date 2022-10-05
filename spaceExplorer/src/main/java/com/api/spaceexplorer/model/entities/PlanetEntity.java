@@ -26,7 +26,7 @@ public class PlanetEntity {
     @Column(name = "explorer_capacity")
     private Integer explorerAmount;
 
-    @OneToMany(mappedBy = "planet", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER ,mappedBy = "planet", cascade = CascadeType.ALL)
     private List<ExplorerEntity> explorers = new ArrayList<>();
 
     public PlanetEntity() {}

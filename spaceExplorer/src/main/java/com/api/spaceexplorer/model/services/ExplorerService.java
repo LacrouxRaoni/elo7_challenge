@@ -36,7 +36,7 @@ public class ExplorerService {
 
     private static void validAxisOutOfBounds(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         if (explorerDto.getX() < 1 || explorerDto.getY() < 1)
-            throw new ExplorerException("axis x and y can't be less than 1");
+            throw new ExplorerException("axis x and y can't be less than 0");
         if (explorerDto.getX() > planetEntity.getHeight())
             throw new ExplorerException("axis x out of planet area");
         if (explorerDto.getY() > planetEntity.getWidth())
@@ -46,7 +46,6 @@ public class ExplorerService {
     private static void validAxisInSamePosition(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         List<ExplorerEntity> explorers = planetEntity.getExplorer();
         for (ExplorerEntity c : explorers){
-            System.out.println("aqui" + c.getPlanet());
             if (c.getX() == explorerDto.getX() && c.getY() == explorerDto.getY())
                 throw new ExplorerException("This explorer can't be registered in this position");
         }
@@ -139,8 +138,6 @@ public class ExplorerService {
 
         var planetData = explorer.getPlanet();
         var explorers = planetData.getExplorer();
-
-        System.out.println(planetData.getPlanetName());
         switch (explorer.getDirection()){
             case NORTH:
                 moveNorth(explorer, explorers, planetData);
@@ -203,7 +200,6 @@ public class ExplorerService {
         var explorer = checkIfExplorerExist(explorerDto.getExplorerName());
         if (explorer.isEmpty())
             throw new ExplorerException("Explorer not found in data base");
-        //String[][] planet = PlanetService.drawPlanet(explorer.get());
         moveExplorer(explorerDto.getMovement(), explorer.get());
         saveExplorer(explorer.get());
         return explorer.get();
