@@ -10,9 +10,7 @@ public class PlanetDto {
         private int width;
         @NotBlank
         private int height;
-
         private String newPlanetName;
-
 
         public PlanetDto() {
         }
@@ -27,8 +25,6 @@ public class PlanetDto {
                 this.planetName = planetName;
                 this.newPlanetName = newPlanetName;
         }
-
-
 
         public String getPlanetName() {
                 return planetName;

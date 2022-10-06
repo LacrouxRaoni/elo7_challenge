@@ -30,7 +30,7 @@ public class ExplorerService {
 
     private static void checkExplorerArgs(String args) {
         if (args.matches("\\W*")){
-            throw new ExplorerException("Arguments should contains AlphaNumeric characters only");
+            throw new ExplorerException("Arguments should contains AlphaNumeric characters");
         }
     }
 
@@ -46,7 +46,6 @@ public class ExplorerService {
     private static void validAxisInSamePosition(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         List<ExplorerEntity> explorers = planetEntity.getExplorer();
         for (ExplorerEntity c : explorers){
-            System.out.println("aqui" + c.getPlanet());
             if (c.getX() == explorerDto.getX() && c.getY() == explorerDto.getY())
                 throw new ExplorerException("This explorer can't be registered in this position");
         }
@@ -139,8 +138,6 @@ public class ExplorerService {
 
         var planetData = explorer.getPlanet();
         var explorers = planetData.getExplorer();
-
-        System.out.println(planetData.getPlanetName());
         switch (explorer.getDirection()){
             case NORTH:
                 moveNorth(explorer, explorers, planetData);
@@ -203,7 +200,6 @@ public class ExplorerService {
         var explorer = checkIfExplorerExist(explorerDto.getExplorerName());
         if (explorer.isEmpty())
             throw new ExplorerException("Explorer not found in data base");
-        //String[][] planet = PlanetService.drawPlanet(explorer.get());
         moveExplorer(explorerDto.getMovement(), explorer.get());
         saveExplorer(explorer.get());
         return explorer.get();
@@ -213,7 +209,7 @@ public class ExplorerService {
         checkExplorerArgs(explorerDto.getExplorerName());
         var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
         if (explorerEntity.isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
+            throw new ExplorerException("Explorer not found in data base");
         explorerEntity.get().getPlanet().decExplorerAmount();
         deleteExplorer(explorerEntity.get());
     }

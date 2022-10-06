@@ -14,7 +14,6 @@ public class PlanetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
     @Column(name = "planet_name")
     private String planetName;
     @Column(name = "size_y")
@@ -59,10 +58,6 @@ public class PlanetEntity {
         this.planetName = newPlanetName;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public String getPlanetName() {
         return planetName;
     }
@@ -78,7 +73,6 @@ public class PlanetEntity {
     public int getExplorerAmountLimit() {
         return explorerAmountLimit;
     }
-
 
     public List<ExplorerEntity> getExplorer() {
         return explorers;
