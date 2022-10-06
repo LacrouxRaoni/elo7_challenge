@@ -62,10 +62,10 @@ public class ExplorerServiceTest {
         try {
             explorerService.prepareToCreateExplorerObj(dto);
         } catch (ExplorerException e) {
-            assertEquals("Arguments should contains AlphaNumeric characters only", e.getMessage());
+            assertEquals("Arguments should contains AlphaNumeric characters", e.getMessage());
             return;
         }
-        fail("expected: Arguments should contains AlphaNumeric characters only");
+        fail("expected: Arguments should contains AlphaNumeric characters");
     }
 
     @Test
@@ -76,10 +76,10 @@ public class ExplorerServiceTest {
         try {
             explorerService.prepareToCreateExplorerObj(dto);
         } catch (ExplorerException e) {
-            assertEquals("axis x and y can't be less than 0", e.getMessage());
+            assertEquals("axis x and y can't be less than 1", e.getMessage());
             return;
         }
-        fail("expected: axis x and y can't be less than 0");
+        fail("expected: axis x and y can't be less than 1");
     }
 
     @Test
@@ -344,5 +344,19 @@ public class ExplorerServiceTest {
         if (!ExplorerEnum.NORTH.equals(explorer.getDirection())){
             fail("expected: north");
         }
+    }
+
+    @Test
+    @DisplayName("Explorer delete will throw exception invalid explorer")
+    public void validAndDeleteExplorer_will_return_exception_there_is_no_explorer_in_db() {
+        create_planet();
+        ExplorerDto dto = new ExplorerDto("planet_test", "explorer14", "NORTH", 2, 1);
+        try {
+            explorerService.validAndDeleteExplorer(dto);
+        } catch (ExplorerException e) {
+            assertEquals("Explorer not found in data base", e.getMessage());
+            return;
+        }
+        fail("expected: Explorer not found in data base");
     }
 }

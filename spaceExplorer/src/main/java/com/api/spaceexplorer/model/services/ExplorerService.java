@@ -30,13 +30,13 @@ public class ExplorerService {
 
     private static void checkExplorerArgs(String args) {
         if (args.matches("\\W*")){
-            throw new ExplorerException("Arguments should contains AlphaNumeric characters only");
+            throw new ExplorerException("Arguments should contains AlphaNumeric characters");
         }
     }
 
     private static void validAxisOutOfBounds(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         if (explorerDto.getX() < 1 || explorerDto.getY() < 1)
-            throw new ExplorerException("axis x and y can't be less than 0");
+            throw new ExplorerException("axis x and y can't be less than 1");
         if (explorerDto.getX() > planetEntity.getHeight())
             throw new ExplorerException("axis x out of planet area");
         if (explorerDto.getY() > planetEntity.getWidth())
@@ -209,7 +209,7 @@ public class ExplorerService {
         checkExplorerArgs(explorerDto.getExplorerName());
         var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
         if (explorerEntity.isEmpty())
-            throw new ExplorerException("Explorer not found in data base\"");
+            throw new ExplorerException("Explorer not found in data base");
         explorerEntity.get().getPlanet().decExplorerAmount();
         deleteExplorer(explorerEntity.get());
     }
