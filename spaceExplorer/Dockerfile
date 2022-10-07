@@ -1,13 +1,15 @@
+FROM maven:3.8.6-eclipse-temurin-11 AS build
+
+RUN mkdir /artefact
+COPY . /artefact
+WORKDIR /artefact
+RUN mvn clean package -DskipTests
+
 FROM adoptopenjdk/openjdk11:alpine-jre
 
 WORKDIR /app
+COPY --from=build /artefact/target/space-explorer.jar space-explorer.jar
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline
-
-COPY src ./src
-
-CMD ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java","-jar","space-explorer.jar"]
 
 EXPOSE 8080
