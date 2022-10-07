@@ -23,13 +23,8 @@ public class ExplorerService {
         this.planetService = planetService;
     }
 
-    private Optional<ExplorerEntity> checkIfExplorerExist(String explorerName){
-        return explorerRepository.findExplorerEntityByExplorerName(explorerName);
-
-    }
-
     private static void checkExplorerArgs(String args) {
-        if (args.matches("\\W*")){
+        if (args.matches("\\W*")) {
             throw new ExplorerException("Arguments should contains AlphaNumeric characters");
         }
     }
@@ -45,7 +40,7 @@ public class ExplorerService {
 
     private static void validAxisInSamePosition(ExplorerDto explorerDto, PlanetEntity planetEntity) {
         List<ExplorerEntity> explorers = planetEntity.getExplorer();
-        for (ExplorerEntity c : explorers){
+        for (ExplorerEntity c : explorers) {
             if (c.getX() == explorerDto.getX() && c.getY() == explorerDto.getY())
                 throw new ExplorerException("This explorer can't be registered in this position");
         }
@@ -56,20 +51,25 @@ public class ExplorerService {
         validAxisInSamePosition(explorerDto, planetEntity);
     }
 
-    private static void validObjArgs(ExplorerDto explorer, PlanetEntity planet){
+    private static void validObjArgs(ExplorerDto explorer, PlanetEntity planet) {
         checkExplorerArgs(explorer.getExplorerName());
         checkExplorerArgs(explorer.getPlanetName());
         validDirection(explorer, planet);
     }
 
+    private Optional<ExplorerEntity> checkIfExplorerExist(String explorerName) {
+        return explorerRepository.findExplorerEntityByExplorerName(explorerName);
+
+    }
+
     public void prepareToCreateExplorerObj(ExplorerDto explorerDto) {
         var planetEntity = planetService.locatePlanet(explorerDto.getPlanetName());
-        if(checkIfExplorerExist(explorerDto.getExplorerName()).isPresent())
+        if (checkIfExplorerExist(explorerDto.getExplorerName()).isPresent())
             throw new ExplorerException("Explorer already exists in Data Base");
         planetService.planetCapacity(planetEntity.get());
         var explorerEntity = ExplorerEntity.fromExplorerDto(explorerDto,
-                                                planetEntity.get(),
-                                                ExplorerEnum.validCardinal(explorerDto.getDirection()));
+                planetEntity.get(),
+                ExplorerEnum.validCardinal(explorerDto.getDirection()));
         validObjArgs(explorerDto, planetEntity.get());
         planetEntity.get().sumExplorerAmount();
         saveExplorer(explorerEntity);
@@ -79,17 +79,17 @@ public class ExplorerService {
         StringBuilder sb = new StringBuilder();
         List<ExplorerEntity> explorers = explorerRepository.findAll();
         sb.append("Explorers{\n");
-        for (ExplorerEntity e : explorers){
+        for (ExplorerEntity e : explorers) {
             sb.append("ExplorerName: ");
             sb.append(e.getExplorerName()).append("\n");
         }
         sb.append('}');
-       return sb.toString();
+        return sb.toString();
     }
 
     public ExplorerEntity getExplorerObject(ExplorerDto explorerDto) {
         var explorerEntity = checkIfExplorerExist(explorerDto.getExplorerName());
-        if (explorerEntity.isEmpty()){
+        if (explorerEntity.isEmpty()) {
             throw new ExplorerException("Explorer not found in data base");
         }
         return explorerEntity.get();
@@ -121,14 +121,12 @@ public class ExplorerService {
     }
 
     private void moveExplorer(String movement, ExplorerEntity explorer) {
-        for (int i = 0; i < movement.length(); i++){
-            if(movement.charAt(i) == 'L'){
+        for (int i = 0; i < movement.length(); i++) {
+            if (movement.charAt(i) == 'L') {
                 ExplorerEnum.turnLeft(explorer);
-            }
-            else if (movement.charAt(i) == 'R'){
+            } else if (movement.charAt(i) == 'R') {
                 ExplorerEnum.turnRight(explorer);
-            }
-            else if (movement.charAt(i) == 'M'){
+            } else if (movement.charAt(i) == 'M') {
                 moveForward(explorer);
             }
         }
@@ -138,59 +136,59 @@ public class ExplorerService {
 
         var planetData = explorer.getPlanet();
         var explorers = planetData.getExplorer();
-        switch (explorer.getDirection()){
+        switch (explorer.getDirection()) {
             case NORTH:
                 moveNorth(explorer, explorers, planetData);
-                break ;
+                break;
             case WEST:
                 moveWest(explorer, explorers, planetData);
-                break ;
+                break;
             case SOUTH:
                 moveSouth(explorer, explorers, planetData);
-                break ;
+                break;
             case EAST:
                 moveEast(explorer, explorers, planetData);
-                break ;
+                break;
         }
     }
 
     private void moveNorth(ExplorerEntity explorer, List<ExplorerEntity> explorers, PlanetEntity planetData) {
 
-        if (explorer.getY() == planetData.getHeight()){
-            if (planetService.checkInExplorerList(1, explorer.getX(), explorers)){
+        if (explorer.getY() == planetData.getHeight()) {
+            if (planetService.checkInExplorerList(1, explorer.getX(), explorers)) {
                 explorer.axisUpdate(1, explorer.getX());
             }
-        } else if (planetService.checkInExplorerList(explorer.getY() + 1, explorer.getX(), explorers)){
-                explorer.axisUpdate(explorer.getY() + 1, explorer.getX());
+        } else if (planetService.checkInExplorerList(explorer.getY() + 1, explorer.getX(), explorers)) {
+            explorer.axisUpdate(explorer.getY() + 1, explorer.getX());
         }
     }
 
     private void moveEast(ExplorerEntity explorer, List<ExplorerEntity> explorers, PlanetEntity planetData) {
-        if (explorer.getX() == planetData.getWidth()){
+        if (explorer.getX() == planetData.getWidth()) {
             if (planetService.checkInExplorerList(explorer.getY(), 1, explorers)) {
                 explorer.axisUpdate(explorer.getY(), 1);
             }
-        } else if (planetService.checkInExplorerList(explorer.getY(), explorer.getX() + 1, explorers)){
+        } else if (planetService.checkInExplorerList(explorer.getY(), explorer.getX() + 1, explorers)) {
             explorer.axisUpdate(explorer.getY(), explorer.getX() + 1);
         }
     }
 
     private void moveSouth(ExplorerEntity explorer, List<ExplorerEntity> explorers, PlanetEntity planetData) {
-        if (explorer.getY() == 1){
-            if (planetService.checkInExplorerList(planetData.getHeight(), explorer.getX(), explorers)){
+        if (explorer.getY() == 1) {
+            if (planetService.checkInExplorerList(planetData.getHeight(), explorer.getX(), explorers)) {
                 explorer.axisUpdate(planetData.getHeight(), explorer.getX());
             }
-        } else if (planetService.checkInExplorerList(explorer.getY() - 1, explorer.getX(), explorers)){
+        } else if (planetService.checkInExplorerList(explorer.getY() - 1, explorer.getX(), explorers)) {
             explorer.axisUpdate(explorer.getY() - 1, explorer.getX());
         }
     }
 
     private void moveWest(ExplorerEntity explorer, List<ExplorerEntity> explorers, PlanetEntity planetData) {
-        if (explorer.getX() == 1){
-            if (planetService.checkInExplorerList(explorer.getY(), planetData.getWidth(), explorers)){
+        if (explorer.getX() == 1) {
+            if (planetService.checkInExplorerList(explorer.getY(), planetData.getWidth(), explorers)) {
                 explorer.axisUpdate(explorer.getY(), planetData.getWidth());
             }
-        } else if (planetService.checkInExplorerList(explorer.getY(), explorer.getX() - 1, explorers)){
+        } else if (planetService.checkInExplorerList(explorer.getY(), explorer.getX() - 1, explorers)) {
             explorer.axisUpdate(explorer.getY(), explorer.getX() - 1);
         }
     }

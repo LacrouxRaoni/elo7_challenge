@@ -24,12 +24,12 @@ public class ExplorerController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllExplorers(){
+    public ResponseEntity getAllExplorers() {
         return ResponseEntity.status(HttpStatus.OK).body(explorerService.findAllExplorers());
     }
 
     @GetMapping
-    public ResponseEntity getExplorer(@RequestBody @Valid ExplorerDto explorerDto){
+    public ResponseEntity getExplorer(@RequestBody @Valid ExplorerDto explorerDto) {
         try {
             ExplorerEntity explorer = explorerService.getExplorerObject(explorerDto);
             return ResponseEntity.status(HttpStatus.OK).body(explorer.toString());
@@ -39,7 +39,7 @@ public class ExplorerController {
     }
 
     @PostMapping
-    public ResponseEntity postExplorer(@RequestBody ExplorerDto explorerDto){
+    public ResponseEntity postExplorer(@RequestBody ExplorerDto explorerDto) {
         try {
             explorerService.prepareToCreateExplorerObj(explorerDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Explorer added with success");
@@ -50,7 +50,7 @@ public class ExplorerController {
 
     @PutMapping("/name")
     public ResponseEntity putExplorerName(@RequestBody ExplorerDto explorerDto) {
-        try{
+        try {
             ExplorerEntity explorer = explorerService.validAndModifyName(explorerDto);
             return ResponseEntity.status(HttpStatus.OK).body(explorer.toString());
         } catch (ExplorerException e) {

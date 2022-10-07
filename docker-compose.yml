@@ -1,0 +1,22 @@
+version: "3.0"
+services:
+  db:
+    build: ./spaceDb
+    container_name: space-explorer-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - space-explorer-db:/var/lib/postgresql/data
+    # restart: always
+
+  back-end:
+    build: ./spaceExplorer/
+    container_name: space-explorer
+    ports:
+      - "8080:8080"
+    # restart: always
+    depends_on:
+      - db
+
+volumes:
+  space-explorer-db:

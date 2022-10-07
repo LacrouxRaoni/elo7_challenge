@@ -37,13 +37,13 @@ public class ExplorerEntity {
         this.planet = planet;
     }
 
-    public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto, PlanetEntity planetEntity, String cardinal){
+    public static ExplorerEntity fromExplorerDto(ExplorerDto explorerDto, PlanetEntity planetEntity, String cardinal) {
         ExplorerEntity explorer = new ExplorerEntity(
-                                    explorerDto.getExplorerName(),
-                                    ExplorerEnum.valueOf(cardinal),
-                                    explorerDto.getX(),
-                                    explorerDto.getY(),
-                                    planetEntity);
+                explorerDto.getExplorerName(),
+                ExplorerEnum.valueOf(cardinal),
+                explorerDto.getX(),
+                explorerDto.getY(),
+                planetEntity);
         return explorer;
     }
 

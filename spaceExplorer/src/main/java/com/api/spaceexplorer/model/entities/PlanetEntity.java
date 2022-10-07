@@ -26,9 +26,10 @@ public class PlanetEntity {
     private Integer explorerAmount;
 
     @OneToMany(mappedBy = "planet", cascade = CascadeType.ALL)
-    private List<ExplorerEntity> explorers = new ArrayList<>();
+    private final List<ExplorerEntity> explorers = new ArrayList<>();
 
-    public PlanetEntity() {}
+    public PlanetEntity() {
+    }
 
     public PlanetEntity(String planetName, int width, int height, int explorerAmount) {
         this.planetName = planetName;
@@ -38,7 +39,7 @@ public class PlanetEntity {
         this.explorerAmount = 0;
     }
 
-    public static PlanetEntity fromPlanetDto(PlanetDto planetDto){
+    public static PlanetEntity fromPlanetDto(PlanetDto planetDto) {
         PlanetEntity planet = new PlanetEntity(planetDto.getPlanetName(),
                 planetDto.getWidth(),
                 planetDto.getHeight(),
@@ -47,11 +48,11 @@ public class PlanetEntity {
     }
 
     public void sumExplorerAmount() {
-        this.explorerAmount += + 1;
+        this.explorerAmount += +1;
     }
 
     public void decExplorerAmount() {
-        this.explorerAmount += - 1;
+        this.explorerAmount += -1;
     }
 
     public void changePlanetName(String newPlanetName) {
@@ -114,7 +115,7 @@ public class PlanetEntity {
         sb.append("\nexplorerAmountLimit= ");
         sb.append(explorerAmountLimit);
         sb.append("\nexplorers in planet: \n");
-        for (ExplorerEntity c : explorers){
+        for (ExplorerEntity c : explorers) {
             sb.append("explorer= ");
             sb.append(c.getExplorerName() + "\n");
         }

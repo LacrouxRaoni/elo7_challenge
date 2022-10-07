@@ -21,20 +21,20 @@ public class PlanetService {
         this.planetRepository = planetRepository;
     }
 
-    public Optional<PlanetEntity> locatePlanet(String planetName) {
-        return planetRepository.findPlanetEntityByPlanetName(planetName);
-    }
-
     private static void checkPostArgs(PlanetDto planet) {
         if (planet.getPlanetName().matches("\\W*")) {
             throw new PlanetException("Planet name should contain AlphaNumeric characters only");
         }
-        if (planet.getWidth() < 1 || planet.getHeight() < 1){
+        if (planet.getWidth() < 1 || planet.getHeight() < 1) {
             throw new PlanetException("Planet size must be greater than 0");
         }
     }
 
-    public void validatePlanetAndSaveInDb(PlanetDto planetDto){
+    public Optional<PlanetEntity> locatePlanet(String planetName) {
+        return planetRepository.findPlanetEntityByPlanetName(planetName);
+    }
+
+    public void validatePlanetAndSaveInDb(PlanetDto planetDto) {
         checkPostArgs(planetDto);
         var planetEntity = PlanetEntity.fromPlanetDto(planetDto);
         if (locatePlanet(planetEntity.getPlanetName()).isPresent())
@@ -46,7 +46,7 @@ public class PlanetService {
         StringBuilder sb = new StringBuilder();
         var list = planetRepository.findAll();
         sb.append("PlanetInfo{\n");
-        for (PlanetEntity c : list){
+        for (PlanetEntity c : list) {
             sb.append("planetName= ");
             sb.append(c.getPlanetName()).append("\n");
         }
@@ -55,7 +55,7 @@ public class PlanetService {
     }
 
     public PlanetEntity getPlanetObject(PlanetDto planetDto) {
-        var planetEntity =  locatePlanet(planetDto.getPlanetName());
+        var planetEntity = locatePlanet(planetDto.getPlanetName());
         if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         return planetEntity.get();
@@ -81,8 +81,8 @@ public class PlanetService {
 
 
     public boolean checkInExplorerList(int y, int x, List<ExplorerEntity> explorers) {
-        for (ExplorerEntity c : explorers){
-            if (y == c.getY() && x == c.getX()){
+        for (ExplorerEntity c : explorers) {
+            if (y == c.getY() && x == c.getX()) {
                 throw new ExplorerException("There is an explorer ahead, aborting movement.");
             }
         }
@@ -96,7 +96,7 @@ public class PlanetService {
     }
 
     public void validAndDeletePlanet(PlanetDto planetDto) {
-        var planetEntity =  locatePlanet(planetDto.getPlanetName());
+        var planetEntity = locatePlanet(planetDto.getPlanetName());
         if (planetEntity.isEmpty())
             throw new PlanetException("Planet doesn't exist in Data Base");
         deletePlanet(planetEntity.get());

@@ -25,12 +25,12 @@ public class PlanetController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity getAllPlanets(){
+    public ResponseEntity getAllPlanets() {
         return ResponseEntity.status(HttpStatus.OK).body(planetService.getAll());
     }
 
     @GetMapping
-    public ResponseEntity getPlanet(@RequestBody @Valid PlanetDto planetDto){
+    public ResponseEntity getPlanet(@RequestBody @Valid PlanetDto planetDto) {
         try {
             PlanetEntity planet = planetService.getPlanetObject(planetDto);
             return ResponseEntity.status(HttpStatus.OK).body(planet.toString());
@@ -40,7 +40,7 @@ public class PlanetController {
     }
 
     @PostMapping
-    public ResponseEntity postPlanet(@RequestBody PlanetDto planetDto){
+    public ResponseEntity postPlanet(@RequestBody PlanetDto planetDto) {
         try {
             planetService.validatePlanetAndSaveInDb(planetDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Planet created with success");
@@ -50,7 +50,7 @@ public class PlanetController {
     }
 
     @PutMapping
-    public ResponseEntity putPlanet(@RequestBody PlanetDto planetDto){
+    public ResponseEntity putPlanet(@RequestBody PlanetDto planetDto) {
         try {
             PlanetEntity planet = planetService.checkArgsToModifyPlanetName(planetDto);
             return ResponseEntity.status(HttpStatus.OK).body(planet.toString());
@@ -61,7 +61,7 @@ public class PlanetController {
 
 
     @DeleteMapping
-    public ResponseEntity deletePlanet(@RequestBody PlanetDto planetDto){
+    public ResponseEntity deletePlanet(@RequestBody PlanetDto planetDto) {
         try {
             planetService.validAndDeletePlanet(planetDto);
             return ResponseEntity.status(HttpStatus.OK).body("Planet deleted with success");

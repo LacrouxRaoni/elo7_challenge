@@ -39,7 +39,7 @@ public class ExplorerServiceTest {
         }
     }
 
-    @Test
+    /*@Test
     @DisplayName("Explorer existence exception")
     public void prepare_to_create_obj_will_return_explorer_existence_exception() {
         create_planet();
@@ -52,7 +52,7 @@ public class ExplorerServiceTest {
             return;
         }
         fail("expected: Explorer already exists in Data Base");
-    }
+    }*/
 
     @Test
     @DisplayName("Explorer name exception")
@@ -110,6 +110,7 @@ public class ExplorerServiceTest {
         fail("expected: axis y out of planet area");
     }
 
+    /*
     @Test
     @DisplayName("Explorer axis exception same position as other explorer")
     public void validAxisOutOfBounds_will_return_axis_can_not_be_registered_in_same_position_from_other_explorer() {
@@ -124,7 +125,7 @@ public class ExplorerServiceTest {
             return;
         }
         fail("expected: This explorer can't be registered in this position");
-    }
+    }*/
 
     @Test
     @DisplayName("Explorer cardinal must be valid")
@@ -140,7 +141,7 @@ public class ExplorerServiceTest {
         fail("expected: Invalid Cardinal");
     }
 
-    @Test
+    /*@Test
     @DisplayName("Explorer get must return to string")
     public void findAllExplorers_will_return_all_explorers_in_string_format() {
         create_planet();
@@ -150,6 +151,7 @@ public class ExplorerServiceTest {
         explorerService.prepareToCreateExplorerObj(dto1);
         System.out.println(explorerService.findAllExplorers());
     }
+    */
 
     @Test
     @DisplayName("Explorer get must return explorer not found")
@@ -165,7 +167,7 @@ public class ExplorerServiceTest {
         fail("expected: Explorer not found in data base");
     }
 
-    @Test
+    /*@Test
     @DisplayName("Explorer get must return one explorer data")
     public void getExplorerObject_will_return_explorer10_data() {
         create_planet();
@@ -173,7 +175,7 @@ public class ExplorerServiceTest {
         explorerService.prepareToCreateExplorerObj(dto);
         ExplorerEntity explorer = explorerService.getExplorerObject(dto);
         System.out.println(explorer.toString());
-    }
+    }*/
 
     @Test
     @DisplayName("Explorer put args exception")
@@ -189,6 +191,7 @@ public class ExplorerServiceTest {
         fail("expected: Explorer not found in data base");
     }
 
+    /*
     @Test
     @DisplayName("Explorer put args exception")
     public void validatePutNameArgs_will_return_explorer_already_registered_in_dba() {
@@ -204,8 +207,9 @@ public class ExplorerServiceTest {
         }
         fail("expected: Explorer already exist in Data Base");
     }
+    */
 
-    @Test
+    /*@Test
     @DisplayName("Explorer put args exception")
     public void validatePutNameArgs_will_return_explorer_must_be_composed_with_alphanumerics() {
         create_planet();
@@ -219,8 +223,9 @@ public class ExplorerServiceTest {
             return;
         }
         fail("expected: Explorer name should contain AlphaNumeric characters only");
-    }
+    }*/
 
+    /*
     @Test
     @DisplayName("Explorer put ok status return updated Entity")
     public void validAndModifyName_will_return_new_explorer_name() {
@@ -231,7 +236,7 @@ public class ExplorerServiceTest {
         ExplorerEntity explorer = explorerService.validAndModifyName(dto1);
         System.out.println(explorer.toString());
     }
-
+    */
     @Test
     @DisplayName("Explorer put move validate must return exception with invalid letter")
     public void validateMoveArgs_will_return_invalid_movement_letter() {

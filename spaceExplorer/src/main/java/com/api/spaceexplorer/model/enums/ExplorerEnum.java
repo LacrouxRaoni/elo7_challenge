@@ -11,12 +11,12 @@ public enum ExplorerEnum {
 
     public static String validCardinal(String cardinal) {
         String cardinalUpperCase = cardinal.toUpperCase();
-        switch (cardinalUpperCase){
+        switch (cardinalUpperCase) {
             case "NORTH":
             case "SOUTH":
             case "WEST":
             case "EAST":
-                break ;
+                break;
             default:
                 throw new ExplorerException("Invalid Cardinal");
         }
@@ -25,37 +25,37 @@ public enum ExplorerEnum {
 
     public static void turnRight(ExplorerEntity explorer) {
 
-        switch (explorer.getDirection()){
+        switch (explorer.getDirection()) {
             case NORTH:
                 explorer.changeExplorerDirection(ExplorerEnum.EAST);
-                break ;
+                break;
             case EAST:
                 explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
+                break;
             case SOUTH:
                 explorer.changeExplorerDirection(ExplorerEnum.WEST);
-                break ;
+                break;
             case WEST:
                 explorer.changeExplorerDirection(ExplorerEnum.NORTH);
-                break ;
+                break;
         }
     }
 
     public static void turnLeft(ExplorerEntity explorer) {
 
-        switch (explorer.getDirection()){
+        switch (explorer.getDirection()) {
             case NORTH:
                 explorer.changeExplorerDirection(ExplorerEnum.WEST);
-                break ;
+                break;
             case WEST:
                 explorer.changeExplorerDirection(ExplorerEnum.SOUTH);
-                break ;
+                break;
             case SOUTH:
                 explorer.changeExplorerDirection(ExplorerEnum.EAST);
-                break ;
+                break;
             case EAST:
                 explorer.changeExplorerDirection(ExplorerEnum.NORTH);
-                break ;
+                break;
         }
     }
 }
