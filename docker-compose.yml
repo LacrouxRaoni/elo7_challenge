@@ -1,22 +1,22 @@
 version: "3.0"
 services:
-  db:
-    build: ./spaceDb
-    container_name: space-explorer-db
-    ports:
-      - "5432:5432"
-    volumes:
-      - space-explorer-db:/var/lib/postgresql/data
-    # restart: always
-
   back-end:
     build: ./spaceExplorer/
     container_name: space-explorer
     ports:
       - "8080:8080"
-    # restart: always
+    env_file:
+      - '.env'
     depends_on:
-      - db
+      - database
+      
+  database:
+    image: postgres:14-alpine
+    container_name: space-explorer-db
+    ports:
+      - "5432:5432"
+    env_file:
+      - '.env'
 
 volumes:
-  space-explorer-db:
+  volumes:
