@@ -68,6 +68,16 @@
             <groupId>com.h2database</groupId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <artifactId>springfox-boot-starter</artifactId>
+            <groupId>io.springfox</groupId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <groupId>io.springfox</groupId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

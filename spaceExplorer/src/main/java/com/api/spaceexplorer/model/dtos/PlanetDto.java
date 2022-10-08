@@ -1,14 +1,19 @@
 package com.api.spaceexplorer.model.dtos;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 
 public class PlanetDto {
 
     @NotBlank
+    @ApiModelProperty(name = "Terra")
     private String planetName;
     @NotBlank
+    @ApiModelProperty(name = "5")
     private int width;
     @NotBlank
+    @ApiModelProperty(name = "5")
     private int height;
     private String newPlanetName;
 
