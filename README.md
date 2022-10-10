@@ -32,7 +32,7 @@ apoś a instalação, clone o repositório para sua máquina e na pasta raíz do
 
 Quando a aplicação estiver online, basta utilizar o Postman para chamar as requisições através do endereço:
 
-`http://database:8080/space-explorer/`
+`http://localhost:8080/space-explorer/`
 
 Caso não queira instalar a aplicação, é possível utilizar através da plataforma Heroku através do link `(disponível até final de Outubro/2022)`:
 
@@ -66,7 +66,7 @@ A API irá retornar todos os planetas cadastrados no banco de dados.
 
 + Request
     ```
-	http://database:8080/space-explorer/planet/all
+	http://localhost:8080/space-explorer/planet/all
     ```
 
 + Response 200
@@ -86,7 +86,7 @@ A API irá retornar os dados do planeta e todas as sondas cadastradas relacionad
 + Request
 	
 			
-			http://database:8080/space-explorer/planet/all
+			http://localhost:8080/space-explorer/planet/all
 
 	+ Body
 
@@ -119,7 +119,7 @@ A API irá retornar os dados do planeta e todas as sondas cadastradas relacionad
 + Request
 	
 			
-			http://database:8080/space-explorer/planet
+			http://localhost:8080/space-explorer/planet
 
 	+ Body
 
@@ -145,7 +145,7 @@ Para editar o nome de um planeta já registrado, deve ser solicitado um put info
 + Request
 	
 			
-			http://database:8080/space-explorer/planet
+			http://localhost:8080/space-explorer/planet
 
 	+ Body
 
@@ -175,7 +175,7 @@ Para apagar um planeta do banco de dados, é necessário informar o nome do plan
 + Request
 	
 			
-			http://database:8080/space-explorer/planet
+			http://localhost:8080/space-explorer/planet
 
 	+ Body
 
@@ -201,7 +201,7 @@ A API irá retornar todas as sondas cadastradas no banco de dados.
 
 + Request
     ```
-	http://database:8080/space-explorer/explorer/all
+	http://localhost:8080/space-explorer/explorer/all
     ```
 
 + Response 200
@@ -222,7 +222,7 @@ A API irá retornar os dados da sonda cadastrada.
 + Request
 	
 			
-			http://database:8080/space-explorer/explorer
+			http://localhost:8080/space-explorer/explorer
 
 	+ Body
 
@@ -251,7 +251,7 @@ A API irá retornar os dados da sonda cadastrada.
 + Request
 	
 			
-			http://database:8080/space-explorer/explorer
+			http://localhost:8080/space-explorer/explorer
 
 	+ Body
 
@@ -279,7 +279,7 @@ Para editar o nome de uma sonda já cadastrada, deve ser solicitado um put em (`
 + Request
 	
 			
-			http://database:8080/space-explorer/explorer/name
+			http://localhost:8080/space-explorer/explorer/name
 
 	+ Body
 
@@ -314,7 +314,7 @@ Caso haja uma outra sonda no caminho, a API deve abortar as instruções. Caso s
 + Request
 	
 			
-			http://database:8080/space-explorer/explorer/move
+			http://localhost:8080/space-explorer/explorer/move
 
 	+ Dados atuais:
 
@@ -355,7 +355,7 @@ Para apagar uma sonda do banco de dados, é necessário informar o nome da sonda
 + Request
 	
 			
-			http://database:8080/space-explorer/explorer
+			http://localhost:8080/space-explorer/explorer
 
 	+ Body
 
