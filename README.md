@@ -24,7 +24,6 @@ Para rodar a aplicação em seu ambiente é necessário ter instalados:
 
 +  <a href="https://docs.docker.com/engine/install/">Docker</a>
 +  <a href="https://docs.docker.com/compose/install/">Docker-compose</a>
-+  <a href="https://www.postgresql.org/download/">Postgresql</a>
 +  <a href="https://www.postman.com/downloads/">Postman</a>
 
 
